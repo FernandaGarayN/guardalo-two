@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:g2backend;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    generate-unique-name: false
+  h2:
+    console:
+      enabled: true
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create-drop
+        dialect: org.hibernate.dialect.H2Dialect
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org.springframework.web: INFO
+    cl.duoc.mgaray.guardalotwo: ${LOGGING_LEVEL:DEBUG}
