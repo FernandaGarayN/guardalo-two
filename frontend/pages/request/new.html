@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Guárdalo Two | Nuevo producto</title>
+    <title>Guárdalo Two | Nuevo pedido</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -182,23 +182,36 @@
                                         <input type="number" class="form-control" id="quantity" name="quantity">
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
-                                    <label for="destination" class="col-sm-2 col-form-label">Destino</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="destination" name="destination">
-                                    </div>
-                                </div>
 
                                 <div class="mb-3 row">
                                     <div class="col-sm-12">
-                                        <input type="button" id="submitRequest" class="btn btn-primary" value="Enviar Solicitud">
-                                        <a href="/" class="btn btn-secondary">Lista de Solicitudes</a>
+                                        <input type="button" id="addProductToCart" class="btn btn-primary" value="Agregar al Carro">
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Carrito de Compras</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul id="carritoLista" class="list-group">
+                                <!-- Los productos del carrito se mostrarán aquí -->
+                            </ul>
+                            <div class="mt-3">
+                                <label for="destination">Destino:</label>
+                                <input type="text" class="form-control" id="destination">
+                            </div>
+                            <div class="mt-3">
+                                <button id="enviarCarrito" class="btn btn-success">Enviar Carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -210,24 +223,94 @@
 
 <script>
     $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
+        var carrito = [];
 
-        $("#submitRequest").click(function () {
-            let requestDetails = {
-                productSku: $("#productSku").val(),
-                quantity: $("#quantity").val(),
-                destination: $("#destination").val()
+        function actualizarCarrito() {
+            $("#carritoLista").empty(); // Limpia la lista actual
+            carrito.forEach(function (producto, index) {
+                $("#carritoLista").append(
+                    '<li class="list-group-item">' +
+                    'SKU: ' + producto.productSku + ', ' +
+                    'Cantidad: <input type="number" value="' + producto.quantity + '" onchange="cambiarCantidad(' + index + ', this.value)">' + ', ' +
+                    'Destino: ' + producto.destination +
+                    '<button onclick="eliminarProducto(' + index + ')" class="btn btn-danger btn-sm float-right">Eliminar</button>' +
+                    '</li>'
+                );
+            });
+        }
+
+        window.cambiarCantidad = function (index, nuevaCantidad) {
+            if (nuevaCantidad <= 0) {
+                eliminarProducto(index);
+            } else {
+                carrito[index].quantity = nuevaCantidad;
+            }
+            actualizarCarrito();
+        };
+
+        window.eliminarProducto = function (index) {
+            carrito.splice(index, 1);
+            actualizarCarrito();
+        };
+
+        $("#addProductToCart").click(function () {
+            let sku = $("#productSku").val();
+            let cantidad = $("#quantity").val();
+
+            // Validación de campos no vacíos
+            if (sku === '' || cantidad === '' || parseInt(cantidad, 10) <= 0) {
+                alert("Por favor, rellena todos los campos y asegúrate de que la cantidad sea mayor que cero.");
+                return;
+            }
+
+            let producto = {
+                productSku: sku,
+                quantity: parseInt(cantidad, 10)
             };
 
-            // Perform logic to submit the request to the server
-            // You can use AJAX to send the request details to the server
-            // and handle the response accordingly.
-            console.log("Request Details:", requestDetails);
+            carrito.push(producto);
+            actualizarCarrito();
+
+            $("#productSku").val('');
+            $("#quantity").val('');
+        });
+
+        // Función para enviar todo el carrito
+        $("#enviarCarrito").click(function() {
+            var destino = $("#destination").val();
+            if (carrito.length > 0 && destino !== "") {
+                var datosCarrito = {
+                    productos: carrito,
+                    destino: destino
+                };
+
+
+                $.ajaxSetup({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log("Enviar carrito:", datosCarrito);
+                // Aquí debes agregar el código para enviar el carrito al servidor
+                $.ajax({
+                    url: 'URL_DEL_SERVIDOR_API',  // Reemplaza con la URL de tu API
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(datosCarrito),
+                    success: function(response) {
+                        console.log("Respuesta del servidor:", response);
+                        // Aquí puedes añadir código para manejar una respuesta exitosa
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error al enviar datos:", error);
+                        // Aquí puedes añadir código para manejar errores
+                    }
+                });
+            } else {
+                alert("Por favor, agrega productos al carrito y especifica un destino.");
+            }
         });
     });
 </script>
