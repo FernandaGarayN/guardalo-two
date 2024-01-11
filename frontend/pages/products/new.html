@@ -225,15 +225,10 @@
 <script src="../../js/jquery.min.js"></script>
 <script src="../../js/bootstrap.min.js"></script>
 <script src="../../js/adminlte.min.js"></script>
+<script src="../../js/guardalotwo.js"></script>
 
 <script>
     $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
 
         $("#save").click(function () {
 
@@ -245,13 +240,19 @@
             data.stock = $("#stock").val()
             data.version = $("#version").val()
 
-            $.post(
-                "localhost:8080/products"
-                , JSON.stringify(data)
-                , function (json, status, jqxhr) {
-                    alert(status)
-                }
-                , 'json')
+            let parameters = {}
+            parameters.url = "http://localhost:8080/products"
+            parameters.method = "POST"
+            parameters.data = JSON.stringify(data)
+            parameters.done = function (data, textStatus, jqXHR) {
+                console.log(`POST products response status: ${textStatus}`)
+            }
+            parameters.donfaile = function (jqXHR, textStatus, errorThrown) {
+                console.log(`POST products response status: ${textStatus}`)
+                console.log(`POST products error: ${errorThrown}`)
+            }
+
+            callRestApi(parameters);
         })
     })
 </script>
