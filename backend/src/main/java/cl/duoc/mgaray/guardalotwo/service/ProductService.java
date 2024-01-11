@@ -12,11 +12,20 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.github.javafaker.Faker;
+import java.util.ArrayList;
 
 @Service
-@RequiredArgsConstructor
+
 public class ProductService {
   private final ProductRepository productRepository;
+  private final Faker faker;
+
+
+  public ProductService(ProductRepository productRepository) {
+    this.productRepository = productRepository;
+    this.faker = new Faker();
+}
 
   @Transactional
   public Product createProduct(NewProductCmd cmd) {
@@ -32,8 +41,20 @@ public class ProductService {
 
   @Transactional(readOnly = true)
   public List<Product> getAllProducts() {
-    return productRepository.findAll().stream().map(this::toDomain).toList();
-  }
+    List<Product> products = new ArrayList<>();
+
+    for (int i = 0; i < 100; i++) {
+      Product product = Product.builder()
+              .sku(faker.code().ean13())
+              .name(faker.commerce().productName())
+              .description(faker.lorem().sentence())
+              .price(faker.number().randomDouble(2, 1, 1000))
+              .stock(faker.number().numberBetween(0, 100))
+              .build();
+      products.add(product);
+    }
+    return products;
+}
 
   @Transactional(readOnly = true)
   public Product getProductById(Long id) {
