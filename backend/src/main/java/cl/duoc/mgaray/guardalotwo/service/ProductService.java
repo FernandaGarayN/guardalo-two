@@ -43,6 +43,12 @@ public class ProductService {
             .orElseThrow(() -> new NotFoundException("Product not found")));
   }
 
+  public List<Product> searchProducts(String term) {
+    List<ProductEntity> founds =
+        productRepository.findBySkuContainingOrNameContainingOrDescriptionContaining(term, term, term);
+    return toDomain(founds);
+  }
+
   @Transactional
   public Product updateProduct(Long id, UpdateProductCmd cmd) {
 
@@ -89,6 +95,10 @@ public class ProductService {
     if (cmd.getImage() != null) {
       found.setImage(cmd.getImage());
     }
+  }
+
+  private List<Product> toDomain(List<ProductEntity> products) {
+    return products.stream().map(this::toDomain).toList();
   }
 
   private Product toDomain(ProductEntity saved) {

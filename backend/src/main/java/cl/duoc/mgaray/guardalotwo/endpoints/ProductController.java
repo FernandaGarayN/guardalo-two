@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,14 +41,27 @@ public class ProductController {
 
   @GetMapping
   public ResponseEntity<List<ResponseGetProduct>> getAllProducts() {
-    var allProducts = productService.getAllProducts();
-    return ResponseEntity.ok(toGetResponse(allProducts));
+    var products = productService.getAllProducts();
+    return ResponseEntity.ok(toGetResponse(products));
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<ResponseGetProduct> getProductById(@PathVariable Long id) {
     var productById = productService.getProductById(id);
     return ResponseEntity.ok(toGetResponse(productById));
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<List<ResponseGetProduct>> searchProducts(@RequestParam String term) {
+    var products = productService.searchProducts(term);
+    return ResponseEntity.ok(products.stream().map(this::toGetResponseWithValue).toList());
+  }
+
+  private ResponseGetProduct toGetResponseWithValue(Product product) {
+    var pp = toGetResponse(product);
+    pp.setValue(pp.getSku());
+    pp.setDisplay(String.format("%s - %s", pp.getSku(), pp.getName()));
+    return pp;
   }
 
   @PatchMapping("/{id}")

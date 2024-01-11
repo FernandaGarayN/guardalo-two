@@ -17,7 +17,7 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    var permitAll = new String[] {"/products"};
+    var permitAll = new String[] {"/products/**"};
 
     http.authorizeHttpRequests(r ->
             r.requestMatchers(permitAll).permitAll().anyRequest().authenticated())
