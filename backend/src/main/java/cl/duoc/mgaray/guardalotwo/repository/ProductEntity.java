@@ -45,43 +45,4 @@ public class ProductEntity {
 
   @Column(name = "stock", nullable = false)
   private int stock;
-
-  @Column(name = "image")
-  private String image;
-
-  @Column(name = "active", nullable = false)
-  private boolean active;
-
-  @Column(name = "created_at", nullable = false)
-  private LocalDateTime createdAt;
-
-  @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
-
-  @Column(name = "deleted_at")
-  private LocalDateTime deletedAt;
-
-  @Column(name = "deleted_by")
-  private String deletedBy;
-
-  @Column(name = "updated_by")
-  private String updatedBy;
-
-  @Column(name = "created_by")
-  private String createdBy;
-
-  @Column(name = "version", nullable = false)
-  private long version;
-
-  @PrePersist
-  public void prePersist() {
-    LocalDateTime now = LocalDateTime.now();
-    this.createdAt = now;
-    this.updatedAt = now;
-  }
-
-  @PreUpdate
-  public void preUpdate() {
-    this.updatedAt = LocalDateTime.now();
-  }
 }
