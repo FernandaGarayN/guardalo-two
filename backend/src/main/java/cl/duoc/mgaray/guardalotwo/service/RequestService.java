@@ -3,6 +3,7 @@ package cl.duoc.mgaray.guardalotwo.service;
 import cl.duoc.mgaray.guardalotwo.repository.*;
 import cl.duoc.mgaray.guardalotwo.service.cmd.NewRequestCmd;
 import cl.duoc.mgaray.guardalotwo.service.cmd.NewRequestDetailCmd;
+import cl.duoc.mgaray.guardalotwo.service.domain.Product;
 import cl.duoc.mgaray.guardalotwo.service.domain.Request;
 import cl.duoc.mgaray.guardalotwo.service.domain.RequestDetail;
 import cl.duoc.mgaray.guardalotwo.service.exception.NotFoundException;
@@ -29,6 +30,14 @@ public class RequestService {
         var saved = requestRepository.save(toEntity(cmd, found.getOrderNumber()));
         var savedDetails = requestDetailRepository.saveAll(toEntities(cmd.getDetails(), saved));
         return toDomain(saved, new HashSet<>(savedDetails));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Request> getAllRequests() {
+        return requestRepository.findAll()
+                .stream()
+                .map(r -> toDomain(r, r.getDetails()))
+                .toList();
     }
 
     private List<RequestDetailEntity> toEntities(List<NewRequestDetailCmd> details, RequestEntity saved) {

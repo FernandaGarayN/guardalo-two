@@ -102,9 +102,15 @@ $(document).ready(function () {
     $("#enviarCarrito").click(function () {
         const destino = $("#destination").val();
         if (carrito.length > 0 && destino !== "") {
-            const datosCarrito = {
-                productos: carrito,
-                destino: destino
+            const data = {
+                subsidiary: "Alguna sucursal",
+                address: destino,
+                details: carrito.map(function (item) {
+                    return {
+                        sku: item.productSku,
+                        quantity: item.quantity
+                    };
+                }),
             };
 
 
@@ -115,22 +121,23 @@ $(document).ready(function () {
                 }
             });
 
-            console.log("Enviar carrito:", datosCarrito);
+            console.log("Enviar carrito:", data);
             // Aquí debes agregar el código para enviar el carrito al servidor
-            $.ajax({
-                url: 'URL_DEL_SERVIDOR_API',  // Reemplaza con la URL de tu API
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(datosCarrito),
-                success: function (response) {
-                    console.log("Respuesta del servidor:", response);
-                    // Aquí puedes añadir código para manejar una respuesta exitosa
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error al enviar datos:", error);
-                    // Aquí puedes añadir código para manejar errores
-                }
-            });
+
+            let parameters = {}
+            parameters.url = "http://localhost:8081/requests"
+            parameters.method = "POST"
+            parameters.data = JSON.stringify(data)
+            parameters.done = function (data, textStatus, jqXHR) {
+                console.log(`POST requests response status: ${textStatus}`)
+            }
+            parameters.donfaile = function (jqXHR, textStatus, errorThrown) {
+                console.log(`POST requests response status: ${textStatus}`)
+                console.log(`POST requests error: ${errorThrown}`)
+            }
+
+            callRestApi(parameters);
+        
         } else {
             alert("Por favor, agrega productos al carrito y especifica un destino.");
         }
