@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Table(name = "requests")
 @Entity
@@ -26,4 +28,14 @@ public class RequestEntity {
     private LocalDate date;
     @Column(name = "order_number", nullable = false)
     private Long orderNumber;
+    @Column(name = "track_number")
+    private String trackNumber;
+    @Builder.Default
+    @OneToMany(
+            mappedBy = "request",
+            fetch = FetchType.LAZY,
+            orphanRemoval = true,
+            cascade = CascadeType.ALL)
+    private Set<RequestDetailEntity> details = new HashSet<>();
+
 }

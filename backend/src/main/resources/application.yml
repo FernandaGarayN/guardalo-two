@@ -12,14 +12,13 @@ spring:
     console:
       enabled: true
   jpa:
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: create-drop
-        dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
   sql:
     init:
       mode: always
+      schema-locations: classpath:sql_imports/V00_00_INIT_TABLES.sql
+      data-locations: classpath:sql_imports/V00_01_INITIAL_DATA.sql
 
 logging:
   level:

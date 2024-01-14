@@ -8,135 +8,113 @@ import cl.duoc.mgaray.guardalotwo.service.cmd.UpdateProductCmd;
 import cl.duoc.mgaray.guardalotwo.service.domain.Product;
 import cl.duoc.mgaray.guardalotwo.service.exception.FoundException;
 import cl.duoc.mgaray.guardalotwo.service.exception.NotFoundException;
-import com.github.javafaker.Faker;
-import jakarta.annotation.PostConstruct;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private final ProductRepository productRepository;
-    private final Faker faker;
+  private final ProductRepository productRepository;
 
-    @PostConstruct
-    public void initDatabase() {
-        for (int i = 0; i < 100; i++) {
-            NewProductCmd cmd = NewProductCmd.builder()
-                    .sku(faker.code().ean13())
-                    .stock(faker.number().numberBetween(0, 100))
-                    .price(faker.number().randomDouble(2, 1, 1000))
-                    .name(faker.commerce().productName())
-                    .description(faker.lorem().sentence())
-                    .build();
+  @Transactional
+  public Product createProduct(NewProductCmd cmd) {
+    productRepository
+        .findBySkuOrName(cmd.getSku(), cmd.getName())
+        .ifPresent(
+            p -> {
+              throw new FoundException("Product already exists");
+            });
+    ProductEntity saved = productRepository.save(toEntity(cmd));
+    return toDomain(saved);
+  }
 
-            if (productRepository
-                    .findBySkuOrName(cmd.getSku(), cmd.getName()).isEmpty()) {
-                productRepository.save(toEntity(cmd));
-            }
-        }
-    }
+  @Transactional(readOnly = true)
+  public List<Product> getAllProducts() {
+    return productRepository.findAll().stream().map(this::toDomain).toList();
+  }
 
-    @Transactional
-    public Product createProduct(NewProductCmd cmd) {
+  @Transactional(readOnly = true)
+  public Product getProductById(Long id) {
+    return toDomain(
         productRepository
-                .findBySkuOrName(cmd.getSku(), cmd.getName())
-                .ifPresent(
-                        p -> {
-                            throw new FoundException("Product already exists");
-                        });
-        ProductEntity saved = productRepository.save(toEntity(cmd));
-        return toDomain(saved);
-    }
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Product not found")));
+  }
 
-    @Transactional(readOnly = true)
-    public List<Product> getAllProducts() {
-        return productRepository.findAll().stream().map(this::toDomain).toList();
-    }
+  public List<Product> searchProducts(String term) {
+    List<ProductEntity> founds =
+        productRepository.findBySkuContainingOrNameContainingOrDescriptionContaining(term, term, term);
+    return toDomain(founds);
+  }
 
-    @Transactional(readOnly = true)
-    public Product getProductById(Long id) {
-        return toDomain(
-                productRepository
-                        .findById(id)
-                        .orElseThrow(() -> new NotFoundException("Product not found")));
-    }
+  @Transactional
+  public Product updateProduct(Long id, UpdateProductCmd cmd) {
 
-    public List<Product> searchProducts(String term) {
-        List<ProductEntity> founds =
-                productRepository.findBySkuContainingOrNameContainingOrDescriptionContaining(term, term, term);
-        return toDomain(founds);
-    }
+    productRepository
+        .findBySkuOrName(cmd.getSku(), cmd.getName())
+        .ifPresent(
+            p -> {
+              throw new FoundException("Product with sku or name already exists");
+            });
 
-    @Transactional
-    public Product updateProduct(Long id, UpdateProductCmd cmd) {
+    ProductEntity found = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
+    update(cmd, found);
+    ProductEntity saved = productRepository.save(found);
+    return toDomain(saved);
+  }
 
+  @Transactional
+  public Product deleteProduct(DeleteProductCmd cmd) {
+    ProductEntity found =
         productRepository
-                .findBySkuOrName(cmd.getSku(), cmd.getName())
-                .ifPresent(
-                        p -> {
-                            throw new FoundException("Product with sku or name already exists");
-                        });
+            .findById(cmd.getId())
+            .orElseThrow(() -> new NotFoundException("Product not found"));
+    productRepository.delete(found);
+    return toDomain(found);
+  }
 
-        ProductEntity found = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
-        update(cmd, found);
-        ProductEntity saved = productRepository.save(found);
-        return toDomain(saved);
+  private void update(UpdateProductCmd cmd, ProductEntity found) {
+    if (cmd.getSku() != null) {
+      found.setSku(cmd.getSku());
     }
 
-    @Transactional
-    public Product deleteProduct(DeleteProductCmd cmd) {
-        ProductEntity found =
-                productRepository
-                        .findById(cmd.getId())
-                        .orElseThrow(() -> new NotFoundException("Product not found"));
-        productRepository.delete(found);
-        return toDomain(found);
+    if (cmd.getName() != null) {
+      found.setName(cmd.getName());
     }
 
-    private void update(UpdateProductCmd cmd, ProductEntity found) {
-        if (cmd.getSku() != null) {
-            found.setSku(cmd.getSku());
-        }
-
-        if (cmd.getName() != null) {
-            found.setName(cmd.getName());
-        }
-
-        if (cmd.getDescription() != null) {
-            found.setDescription(cmd.getDescription());
-        }
-
-        found.setPrice(cmd.getPrice());
-
-        found.setStock(cmd.getStock());
+    if (cmd.getDescription() != null) {
+      found.setDescription(cmd.getDescription());
     }
 
-    private List<Product> toDomain(List<ProductEntity> products) {
-        return products.stream().map(this::toDomain).toList();
-    }
+    found.setPrice(cmd.getPrice());
 
-    private Product toDomain(ProductEntity saved) {
-        return Product.builder()
-                .id(saved.getId())
-                .sku(saved.getSku())
-                .name(saved.getName())
-                .description(saved.getDescription())
-                .price(saved.getPrice())
-                .stock(saved.getStock())
-                .build();
-    }
+    found.setStock(cmd.getStock());
+  }
 
-    private ProductEntity toEntity(NewProductCmd cmd) {
-        return ProductEntity.builder()
-                .sku(cmd.getSku())
-                .name(cmd.getName())
-                .description(cmd.getDescription())
-                .price(cmd.getPrice())
-                .stock(cmd.getStock())
-                .build();
-    }
+  private List<Product> toDomain(List<ProductEntity> products) {
+    return products.stream().map(this::toDomain).toList();
+  }
+
+  private Product toDomain(ProductEntity saved) {
+    return Product.builder()
+        .id(saved.getId())
+        .sku(saved.getSku())
+        .name(saved.getName())
+        .description(saved.getDescription())
+        .price(saved.getPrice())
+        .stock(saved.getStock())
+        .build();
+  }
+
+  private ProductEntity toEntity(NewProductCmd cmd) {
+    return ProductEntity.builder()
+        .sku(cmd.getSku())
+        .name(cmd.getName())
+        .description(cmd.getDescription())
+        .price(cmd.getPrice())
+        .stock(cmd.getStock())
+        .build();
+  }
 }

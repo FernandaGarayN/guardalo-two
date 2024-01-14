@@ -18,7 +18,7 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    var permitAll = new String[] {"/products/**", "/h2-console/**"};
+    var permitAll = new String[] {"/**"};
     http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
             .authorizeHttpRequests(r -> r.requestMatchers(permitAll).permitAll().anyRequest().authenticated())
             .csrf(AbstractHttpConfigurer::disable)
