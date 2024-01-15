@@ -130,10 +130,13 @@ $(document).ready(function () {
             parameters.data = JSON.stringify(data)
             parameters.done = function (data, textStatus, jqXHR) {
                 console.log(`POST requests response status: ${textStatus}`)
+                alert("Solicitud ingresada exitosamente!")
+                window.location.href = "list.html"
             }
-            parameters.donfaile = function (jqXHR, textStatus, errorThrown) {
+            parameters.fail = function (jqXHR, textStatus, errorThrown) {
                 console.log(`POST requests response status: ${textStatus}`)
                 console.log(`POST requests error: ${errorThrown}`)
+                alert("Ha ocurrido un error al ingresar la solicitud!")
             }
 
             callRestApi(parameters);
