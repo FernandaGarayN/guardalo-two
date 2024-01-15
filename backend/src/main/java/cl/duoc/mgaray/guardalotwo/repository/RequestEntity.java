@@ -28,8 +28,8 @@ public class RequestEntity {
     private LocalDate date;
     @Column(name = "order_number", nullable = false)
     private Long orderNumber;
-    @Column(name = "track_number")
-    private String trackNumber;
+    @Column(name = "track_code")
+    private String trackCode;
     @Builder.Default
     @OneToMany(
             mappedBy = "request",

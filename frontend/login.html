@@ -18,7 +18,7 @@
       <p class="login-box-msg">Ingresa para iniciar tu sesión</p>
 
       <div class="input-group mb-3">
-        <input type="email" class="form-control" placeholder="Usuario">
+        <input type="text" id="username" class="form-control" placeholder="Usuario">
         <div class="input-group-append">
           <div class="input-group-text">
             <span class="fas fa-envelope"></span>
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="input-group mb-3">
-        <input type="password" class="form-control" placeholder="Contraseña">
+        <input type="password" id="password" class="form-control" placeholder="Contraseña">
         <div class="input-group-append">
           <div class="input-group-text">
             <span class="fas fa-lock"></span>
@@ -42,7 +42,7 @@
         </div>
         <!-- /.col -->
         <div class="col-4">
-          <a href="dashboard.html" class="btn btn-primary btn-block">Ingresar</a>
+          <button id="login" class="btn btn-primary btn-block">Ingresar</button>
         </div>
         <!-- /.col -->
       </div>
@@ -55,5 +55,50 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/adminlte.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Evento al hacer clic en el botón de login
+    $('#login').click(function(e) {
+        e.preventDefault(); // Previene la recarga de la página
+
+        // Recoge los datos del usuario y la contraseña
+        var username = $('#username').val();
+        var password = $('#password').val();
+
+        // Datos a enviar
+        var data = {
+            userName: username,
+            password: password
+        };
+
+        // Solicitud AJAX
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:8081/users/login',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(response) {
+                // Si el inicio de sesión es exitoso
+                if (response.success) {
+                    alert("Login exitoso");
+                    window.location.href = "dashboard.html"; // Redirecciona a la página del dashboard
+                }
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                // Manejo de errores basado en el código de estado
+                if (xhr.status === 404) {
+                    alert("Usuario no encontrado");
+                } else if (xhr.status === 500) {
+                    alert("Error en el servidor, intente de nuevo");
+                } else {
+                    alert("Error desconocido: " + textStatus);
+                }
+            }
+        });
+    });
+});
+
+</script>
 </body>
 </html>

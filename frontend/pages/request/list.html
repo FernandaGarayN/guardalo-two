@@ -183,10 +183,12 @@
                             <table id="solicitudesTabla" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>Sucursal</th>
                                         <th>Dirección</th>
                                         <th>Fecha</th>
                                         <th>Número de Orden</th>
+                                        <th>Código de Seguimiento</th>
                                         <th>Detalle</th>
                                     </tr>
                                 </thead>
@@ -216,13 +218,63 @@
                 data.forEach(function (solicitud) {
                     $('#solicitudesTabla > tbody').append(`
                         <tr>
+                            <td>
+                                <button id="btn_${solicitud.orderNumber}" data-track="${solicitud.trackCode}" class="btn btn-success">Consultar estado</button>
+                            </td>
                             <td>${solicitud.subsidiary}</td>
                             <td>${solicitud.address}</td>
                             <td>${solicitud.date}</td>
                             <td>${solicitud.orderNumber}</td>
-                            <td>Aqui tabla detalle</td>
+                            <td>${solicitud.trackCode}</td>
+                            <td id='order_${solicitud.orderNumber}'></td>
                         </tr>
                     `);
+
+                    $(`#btn_${solicitud.orderNumber}`).click(function(){
+                        const trackCode = $(`#btn_${solicitud.orderNumber}`).attr("data-track");
+
+                        $.ajaxSetup({
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        $.ajax({
+                            url: `http://localhost:8081/requests/${trackCode}/status`,
+                            type: 'GET',
+                            success: function (data) {
+                                alert(`Estado de la solicutud: ${data.status}`)
+                            }
+                        });
+                    });
+
+                    $(`#order_${solicitud.orderNumber}`).append(`
+                        <table id='table_${solicitud.orderNumber}' class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    `);
+
+                    solicitud.details.forEach(function(detail){
+                        console.log(detail)
+                        $(`#table_${solicitud.orderNumber} > tbody`).append(`
+                            <tr>
+                                <td>${detail.sku}</td>
+                                <td>${detail.name}</td>
+                                <td>${detail.price}</td>
+                                <td>${detail.quantity}</td>
+                            </tr>
+                        `);
+                    });
                 });
             },
             error: function (error) {

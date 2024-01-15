@@ -152,3 +152,25 @@ INSERT INTO request_details (request_id, product_id, quantity) VALUES
 (20, 57, 3);
 
 -- Nota: Asegúrate de que los product_id coincidan con los productos reales en tu tabla products
+
+INSERT INTO users (user_name, password, subsidiary, address) VALUES
+('user01', 'Pass1234!', 'Sucursal 1', 'Calle Falsa 123, Ciudad A'),
+('user02', 'Pass1234!', 'Sucursal 2', 'Avenida Principal 456, Ciudad B'),
+('user03', 'Pass1234!', 'Sucursal 3', 'Plaza Central 789, Ciudad C'),
+('user04', 'Pass1234!', 'Sucursal 4', 'Barrio Alto 321, Ciudad D'),
+('user05', 'Pass1234!', 'Sucursal 5', 'Zona Industrial 654, Ciudad E'),
+('user06', 'Pass1234!', 'Sucursal 6', 'Distrito Comercial 987, Ciudad F'),
+('user07', 'Pass1234!', 'Sucursal 7', 'Ruta 20 km 5, Ciudad G'),
+('user08', 'Pass1234!', 'Sucursal 8', 'Camino Viejo 210, Ciudad H'),
+('user09', 'Pass1234!', 'Sucursal 9', 'Paseo del Río 543, Ciudad I'),
+('user10', 'Pass1234!', 'Sucursal 10', 'Sector Norte 678, Ciudad J'),
+('user11', 'Pass1234!', 'Sucursal 11', 'Callejón del Sur 987, Ciudad K'),
+('user12', 'Pass1234!', 'Sucursal 12', 'Avenida de los Árboles 654, Ciudad L'),
+('user13', 'Pass1234!', 'Sucursal 13', 'Parque Industrial 321, Ciudad M'),
+('user14', 'Pass1234!', 'Sucursal 14', 'Centro Histórico 432, Ciudad N'),
+('user15', 'Pass1234!', 'Sucursal 15', 'Boulevard del Lago 369, Ciudad O'),
+('user16', 'Pass1234!', 'Sucursal 16', 'Puerto Comercial 258, Ciudad P'),
+('user17', 'Pass1234!', 'Sucursal 17', 'Zona Turística 147, Ciudad Q'),
+('user18', 'Pass1234!', 'Sucursal 18', 'Circunvalación 963, Ciudad R'),
+('user19', 'Pass1234!', 'Sucursal 19', 'Calle del Mercado 852, Ciudad S'),
+('user20', 'Pass1234!', 'Sucursal 20', 'Ruta del Sol 741, Ciudad T');

@@ -4,19 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-
 @Builder
 @Getter
 @Setter
-public class Request {
+public class User {
     private Long id;
+    private String userName;
+    private String password;
     private String subsidiary;
     private String address;
-    private LocalDate date;
-    private Long orderNumber;
-    private String trackCode;
-    private Set<RequestDetail> details;
 }
