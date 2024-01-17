@@ -1,5 +1,7 @@
 package cl.duoc.mgaray.guardalotwo.service;
 
+import cl.duoc.mgaray.guardalotwo.apiclients.warehouse.WarehouseClient;
+import cl.duoc.mgaray.guardalotwo.apiclients.warehouse.WarehouseProduct;
 import cl.duoc.mgaray.guardalotwo.repository.ProductEntity;
 import cl.duoc.mgaray.guardalotwo.repository.ProductRepository;
 import cl.duoc.mgaray.guardalotwo.service.cmd.DeleteProductCmd;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ProductService {
   private final ProductRepository productRepository;
+  private final WarehouseClient warehouseClient;
 
   @Transactional
   public Product createProduct(NewProductCmd cmd) {
@@ -33,6 +36,13 @@ public class ProductService {
   @Transactional(readOnly = true)
   public List<Product> getAllProducts() {
     return productRepository.findAll().stream().map(this::toDomain).toList();
+  }
+
+
+
+  @Transactional(readOnly = true)
+  public List<WarehouseProduct> getAllProductsMusicPro() {
+    return warehouseClient.getProducts().getProducts();
   }
 
   @Transactional(readOnly = true)

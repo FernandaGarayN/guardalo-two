@@ -1,5 +1,6 @@
 package cl.duoc.mgaray.guardalotwo.endpoints;
 
+import cl.duoc.mgaray.guardalotwo.apiclients.warehouse.WarehouseProduct;
 import cl.duoc.mgaray.guardalotwo.endpoints.request.RequestPatchProduct;
 import cl.duoc.mgaray.guardalotwo.endpoints.request.RequestPostProduct;
 import cl.duoc.mgaray.guardalotwo.endpoints.response.ResponseDeleteProduct;
@@ -37,6 +38,12 @@ public class ProductController {
     var newCmd = toNewCmd(request);
     var product = productService.createProduct(newCmd);
     return ResponseEntity.ok(toPostResponse(product));
+  }
+
+  @GetMapping("/music-pro")
+  public ResponseEntity<List<WarehouseProduct>> getAllProductsMusicPro() {
+    var products = productService.getAllProductsMusicPro();
+    return ResponseEntity.ok(products);
   }
 
   @GetMapping

@@ -103,7 +103,7 @@ $(document).ready(function () {
         const destino = $("#destination").val();
         if (carrito.length > 0 && destino !== "") {
             const data = {
-                subsidiary: "Alguna sucursal",
+                subsidiary: destino,
                 address: destino,
                 details: carrito.map(function (item) {
                     return {
