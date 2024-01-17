@@ -13,6 +13,8 @@ import java.util.List;
 @Getter
 public class RequestPostRequest {
     @NotBlank
+    private String transport;
+    @NotBlank
     private String subsidiary;
     @NotBlank
     private String address;

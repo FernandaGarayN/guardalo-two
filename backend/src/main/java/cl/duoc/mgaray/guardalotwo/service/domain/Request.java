@@ -18,5 +18,6 @@ public class Request {
     private LocalDate date;
     private Long orderNumber;
     private String trackCode;
+    private String transport;
     private Set<RequestDetail> details;
 }

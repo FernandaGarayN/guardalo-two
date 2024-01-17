@@ -18,5 +18,6 @@ public class ResponseGetRequest {
     private LocalDate date;
     private Long orderNumber;
     private String trackCode;
+    private String transport;
     private Set<ResponseGetRequestDetail> details;
 }

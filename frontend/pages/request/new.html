@@ -15,6 +15,14 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="../../css/adminlte.min.css">
     <link rel="stylesheet" href="../../css/jquery/jquery-ui.min.css">
+
+    <style>
+        #spinner {
+            top: 0;
+            left: 0;
+            z-index: 10; /* Ajusta este valor según sea necesario */
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -173,16 +181,46 @@
                     <div class="card">
                         <div class="card-header border-0">
                             <div class="d-flex justify-content-between">
-                                <h3 class="card-title">Detalles de la Solicitud</h3>
+                                <h3 class="card-title">Detalles de Transporte</h3>
                             </div>
                         </div>
                         <div class="card-body">
 
+                            <div class="mb-3">
+                                <label for="transportCompany">Empresa de Transporte:</label>
+                                <select id="transportCompany" class="form-control">
+                                    <option value="empty" selected>-- SELECCIONE UNA EMPRESA DE TRANSPORTE --</option>
+                                    <option value="telollevo">Te Lo Llevo</option>
+                                    <option value="musicpro">Music Pro</option>
+                                    <!-- Agrega más opciones según sea necesario -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                        </div>
+
+                        <input type="hidden" id="transportEnterprise" value="">
+                        <input type="hidden" id="productDisplay" value="">
+                        <input type="hidden" id="productPrice" value="">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="card-title">Detalles de la Solicitud</h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
                             <form>
                                 <div class="mb-3 row">
                                     <label for="productSku" class="col-sm-2 col-form-label">SKU del Producto</label>
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-8">
                                         <input type="text" class="form-control" id="productSku" name="productSku">
+                                    </div>
+                                    <div class="col-sm-2" id="spinner-auto" style="display: none;">
+                                        <img src="../../img/loading-buffering.gif" alt="Loading..." width="40"
+                                             height="40">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -195,10 +233,13 @@
 
                                 <div class="mb-3 row">
                                     <div class="col-sm-12">
-                                        <input type="button" id="addProductToCart" class="btn btn-primary" value="Agregar al Carro">
+                                        <input type="button" id="addProductToCart" class="btn btn-primary"
+                                               value="Agregar al Carro">
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                        <div class="card-footer">
                         </div>
                     </div>
                 </div>
@@ -226,11 +267,15 @@
                             </div>
                             <div class="mt-3">
                                 <button id="enviarCarrito" class="btn btn-success">Enviar Carrito</button>
+                                <div id="spinner-send" style="display: none;">
+                                    <img src="../../img/loading-buffering.gif" alt="Loading..." width="40"
+                                         height="40">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>

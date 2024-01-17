@@ -8,7 +8,10 @@ import lombok.Setter;
 @Setter
 @Builder
 public class SendToTransportCmd {
+    private String transport;
     private String destination;
     private String destinationAddress;
     private String orderNumber;
+    private String info;
+    private String comment;
 }

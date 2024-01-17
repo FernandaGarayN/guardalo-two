@@ -211,7 +211,7 @@
 <script>
     $(document).ready(function () {
         $.ajax({
-            url: 'http://localhost:8081/products',
+            url: 'http://localhost:8081/api/v1/products',
             method: 'GET',
             success: function (data) {
                 data.forEach(function (producto) {

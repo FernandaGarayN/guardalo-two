@@ -13,104 +13,122 @@ import cl.duoc.mgaray.guardalotwo.service.cmd.RequestStatusCmd;
 import cl.duoc.mgaray.guardalotwo.service.cmd.SendToTransportCmd;
 import cl.duoc.mgaray.guardalotwo.service.domain.Request;
 import cl.duoc.mgaray.guardalotwo.service.domain.RequestDetail;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/requests")
+@RequestMapping("api/v1/requests")
 @RequiredArgsConstructor
 public class RequestController {
-    private final RequestService requestService;
+  private final RequestService requestService;
 
-    @PostMapping
-    public ResponseEntity<ResponsePostRequest> post(@Validated @RequestBody RequestPostRequest request) {
-        var created = requestService.createRequest(toCmd(request));
-        var trackCode = requestService.sendToTransport(toCmd(created));
-        requestService.setTrackCode(created.getOrderNumber(),trackCode);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ResponsePostRequest.builder().id(created.getId()).build());
+  @PostMapping
+  public ResponseEntity<ResponsePostRequest> post(@Validated @RequestBody RequestPostRequest request) {
+    Request created;
+    if ("telollevo".equals(request.getTransport())) {
+      created = requestService.createRequest(toCmd(request));
+    } else {
+      created = requestService.createRequestMP(toCmd(request));
     }
 
-    @GetMapping
-    public ResponseEntity<List<ResponseGetRequest>> getAllRequests() {
-        var requests = requestService.getAllRequests();
-        return ResponseEntity.ok(toGetResponse(requests));
-    }
+    var trackCode = requestService.sendToTransport(toCmd(created, request.getTransport()));
+    requestService.setTrackCode(created.getOrderNumber(), trackCode);
+    return ResponseEntity.status(HttpStatus.CREATED).body(ResponsePostRequest.builder().id(created.getId()).build());
+  }
 
-    @GetMapping("/{trackCode}/status")
-    public ResponseEntity<ResponseGetRequestStatus> getRequestStatus(@PathVariable String trackCode) {
-        var status = requestService.getRequestStatus(toCmd(trackCode));
-        return ResponseEntity.ok(ResponseGetRequestStatus.builder().status(status).build());
-    }
+  @GetMapping
+  public ResponseEntity<List<ResponseGetRequest>> getAllRequests() {
+    var requests = requestService.getAllRequests();
+    return ResponseEntity.ok(toGetResponse(requests));
+  }
 
-    private List<ResponseGetRequest> toGetResponse(List<Request> requests) {
-        return requests.stream()
-                .map(this::toGetResponse)
-                .toList();
-    }
+  @GetMapping("/{trackCode}/status")
+  public ResponseEntity<ResponseGetRequestStatus> getRequestStatus(@PathVariable String trackCode) {
+    var status = requestService.getRequestStatus(toCmd(trackCode));
+    return ResponseEntity.ok(ResponseGetRequestStatus.builder().status(status).build());
+  }
 
-    private ResponseGetRequest toGetResponse(Request request) {
-        return ResponseGetRequest.builder()
-                .trackCode(request.getTrackCode())
-                .orderNumber(request.getOrderNumber())
-                .date(request.getDate())
-                .address(request.getAddress())
-                .subsidiary(request.getSubsidiary())
-                .details(toGetResponse(request.getDetails()))
-                .build();
-    }
+  private List<ResponseGetRequest> toGetResponse(List<Request> requests) {
+    return requests.stream()
+        .map(this::toGetResponse)
+        .toList();
+  }
 
-    private Set<ResponseGetRequestDetail> toGetResponse(Set<RequestDetail> details) {
-        return details.stream()
-                .map(this::toGetResponse)
-                .collect(Collectors.toSet());
-    }
+  private ResponseGetRequest toGetResponse(Request request) {
+    return ResponseGetRequest.builder()
+        .trackCode(request.getTrackCode())
+        .orderNumber(request.getOrderNumber())
+        .date(request.getDate())
+        .address(request.getAddress())
+        .subsidiary(request.getSubsidiary())
+        .transport(request.getTransport())
+        .details(toGetResponse(request.getDetails()))
+        .build();
+  }
 
-    private ResponseGetRequestDetail toGetResponse(RequestDetail detail) {
-        return ResponseGetRequestDetail.builder()
-                .sku(detail.getSku())
-                .name(detail.getName())
-                .price(detail.getPrice())
-                .quantity(detail.getQuantity())
-                .build();
-    }
+  private Set<ResponseGetRequestDetail> toGetResponse(Set<RequestDetail> details) {
+    return details.stream()
+        .map(this::toGetResponse)
+        .collect(Collectors.toSet());
+  }
 
-    private SendToTransportCmd toCmd(Request created) {
-        return SendToTransportCmd.builder()
-                .destination(created.getSubsidiary())
-                .destinationAddress(created.getAddress())
-                .orderNumber(Long.toString(created.getOrderNumber()))
-                .build();
-    }
+  private ResponseGetRequestDetail toGetResponse(RequestDetail detail) {
+    return ResponseGetRequestDetail.builder()
+        .sku(detail.getSku())
+        .name(detail.getName())
+        .price(detail.getPrice())
+        .quantity(detail.getQuantity())
+        .build();
+  }
 
-    private NewRequestCmd toCmd(RequestPostRequest request) {
-        return NewRequestCmd.builder()
-                .address(request.getAddress())
-                .subsidiary(request.getSubsidiary())
-                .details(toCmd(request.getDetails()))
-                .build();
-    }
+  private SendToTransportCmd toCmd(Request created, String transport) {
+    return SendToTransportCmd.builder()
+        .transport(transport)
+        .destination(created.getSubsidiary())
+        .destinationAddress(created.getAddress())
+        .orderNumber(Long.toString(created.getOrderNumber()))
+        .info("Número de orden: " + created.getOrderNumber())
+        .comment("Número de orden: " + created.getOrderNumber())
+        .build();
+  }
 
-    private List<NewRequestDetailCmd> toCmd(List<RequestPostRequestDetail> details) {
-        return details.stream()
-                .map(
-                        r -> NewRequestDetailCmd.builder()
-                                .sku(r.getSku())
-                                .quantity(r.getQuantity())
-                                .build()
-                )
-                .toList();
-    }
+  private NewRequestCmd toCmd(RequestPostRequest request) {
+    return NewRequestCmd.builder()
+        .transport(request.getTransport())
+        .address(request.getAddress())
+        .subsidiary(request.getSubsidiary())
+        .details(toCmd(request.getDetails()))
+        .build();
+  }
 
-    private RequestStatusCmd toCmd(String trackCode) {
-        return RequestStatusCmd.builder()
-                .trackCode(trackCode)
-                .build();
-    }
+  private List<NewRequestDetailCmd> toCmd(List<RequestPostRequestDetail> details) {
+    return details.stream()
+        .map(
+            r -> NewRequestDetailCmd.builder()
+                .sku(r.getSku())
+                .name(r.getName())
+                .price(r.getPrice())
+                .description(r.getDescription())
+                .quantity(r.getQuantity())
+                .build()
+        )
+        .toList();
+  }
+
+  private RequestStatusCmd toCmd(String trackCode) {
+    return RequestStatusCmd.builder()
+        .trackCode(trackCode)
+        .build();
+  }
 }

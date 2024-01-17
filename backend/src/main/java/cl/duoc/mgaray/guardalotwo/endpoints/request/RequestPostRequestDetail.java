@@ -8,8 +8,15 @@ import lombok.Getter;
 @Builder
 @Getter
 public class RequestPostRequestDetail {
-    @NotBlank
-    private String sku;
-    @NotNull
-    private Long quantity;
+  @NotBlank
+  private String sku;
+  @NotNull
+  private Long quantity;
+  @NotBlank
+  private String description;
+  @NotNull
+  private double price;
+  @NotBlank
+  private String name;
+
 }

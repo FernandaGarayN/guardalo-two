@@ -28,39 +28,132 @@ function eliminarProducto(index) {
 };
 
 $(document).ready(function () {
+    $("#destination").prop('disabled', true);
+    $("#enviarCarrito").prop('disabled', true);
+    $("#productSku").prop('disabled', true);
+    $("#quantity").prop('disabled', true);
+    $("#addProductToCart").prop('disabled', true);
 
-    $("#productSku").autocomplete({
-        source: function (request, response) {
-            $.ajax({
-                url: "http://localhost:8081/products/search",
-                type: 'GET',
-                data: {
-                    term: request.term
-                },
-                success: function (data) {
-                    const filteredData = data.filter(function (item) {
-                        return !carrito.find(function (producto) {
-                            return producto.productSku === item.sku
+    $("#transportCompany").change(function () {
+        let transportCompany = $(this).val();
+
+        $("#transportEnterprise").val(transportCompany)
+
+        // Si la empresa de transporte es la deseada, habilita los campos
+        if (transportCompany !== "empty") {
+            $("#destination").prop('disabled', false);
+            $("#enviarCarrito").prop('disabled', false);
+            $("#productSku").prop('disabled', false);
+            $("#quantity").prop('disabled', false);
+            $("#addProductToCart").prop('disabled', false);
+        } else {
+            // Si no, deshabilita los campos
+            $("#destination").prop('disabled', true);
+            $("#enviarCarrito").prop('disabled', true);
+            $("#productSku").prop('disabled', true);
+            $("#quantity").prop('disabled', true);
+            $("#addProductToCart").prop('disabled', true);
+        }
+        // Borrar el carrito
+        carrito.length = 0;
+        actualizarCarrito();
+
+        $("#productSku").autocomplete({
+            search: function() {
+                $("#spinner-auto").show();
+            },
+            response: function() {
+                $("#spinner-auto").hide();
+            },
+            source: function (request, response) {
+                $.ajax({
+                    url: `http://localhost:8081/api/v1/products/search?transportEnterprise=${transportCompany}`,
+                    type: 'GET',
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        const filteredData = data.filter(function (item) {
+                            return !carrito.find(function (producto) {
+                                return producto.productSku === item.sku
+                            });
                         });
-                    });
 
-                    const modifiedData = filteredData.map(function (item) {
-                        return {
-                            value: item.display,
-                            sku: item.sku,
-                            stock: item.stock
-                        };
-                    });
-                    response(modifiedData);
+                        const modifiedData = filteredData.map(function (item) {
+                            return {
+                                value: item.display,
+                                sku: item.sku,
+                                price: item.price,
+                                stock: item.stock
+                            };
+                        });
+                        response(modifiedData);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                $("#productSku").val(ui.item.sku)
+                $("#productDisplay").val(ui.item.value)
+                $("#productPrice").val(ui.item.price)
+                $("#quantity").attr('data-max', ui.item.stock)
+                $("#maxStock").text("Stock máximo: " + ui.item.stock);
+                return false;
+            }
+        });
+    });
+
+    $("#enviarCarrito").click(function () {
+        const destino = $("#destination").val();
+        const transportEnterprise = $("#transportEnterprise").val();
+        if (carrito.length > 0 && destino !== "") {
+            const data = {
+                transport: transportEnterprise,
+                subsidiary: destino,
+                address: destino,
+                details: carrito.map(function (item) {
+                    return {
+                        sku: item.productSku,
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price,
+                        description: item.description
+                    };
+                }),
+            };
+
+
+            $.ajaxSetup({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             });
-        },
-        minLength: 2,
-        select: function (event, ui) {
-            $("#productSku").val(ui.item.sku)
-            $("#quantity").attr('data-max', ui.item.stock)
-            $("#maxStock").text("Stock máximo: " + ui.item.stock);
-            return false;
+
+            console.log("Enviar carrito:", data);
+
+            let parameters = {}
+            parameters.url = "http://localhost:8081/api/v1/requests"
+            parameters.method = "POST"
+            parameters.data = JSON.stringify(data)
+            parameters.done = function (data, textStatus, jqXHR) {
+                console.log(`POST requests response status: ${textStatus}`)
+                alert("Solicitud ingresada exitosamente!")
+                window.location.href = "list.html"
+            }
+            parameters.fail = function (jqXHR, textStatus, errorThrown) {
+                console.log(`POST requests response status: ${textStatus}`)
+                console.log(`POST requests error: ${errorThrown}`)
+                alert("Ha ocurrido un error al ingresar la solicitud!")
+            }
+
+            callRestApi(parameters);
+
+        } else {
+            alert("Por favor, agrega productos al carrito y especifica un destino.");
         }
     });
 
@@ -68,6 +161,8 @@ $(document).ready(function () {
         let sku = $("#productSku").val();
         let cantidad = $("#quantity").val();
         let maxStock = $("#quantity").attr('data-max');
+        let productDisplay = $("#productDisplay").val();
+        let productPrice = $("#productPrice").val();
 
         // Validación de campos no vacíos
         if (sku === '' || cantidad === '' || parseInt(cantidad, 10) <= 0) {
@@ -87,8 +182,13 @@ $(document).ready(function () {
 
         let producto = {
             productSku: sku,
+            name: productDisplay,
+            description: productDisplay,
+            price: productPrice,
             quantity: parseInt(cantidad, 10)
         };
+
+        console.log("Producto a agregar:", producto)
 
         carrito.push(producto);
         actualizarCarrito();
@@ -97,52 +197,12 @@ $(document).ready(function () {
         $("#quantity").val('');
         $("#maxStock").text('');
     });
+});
 
-    // Función para enviar todo el carrito
-    $("#enviarCarrito").click(function () {
-        const destino = $("#destination").val();
-        if (carrito.length > 0 && destino !== "") {
-            const data = {
-                subsidiary: destino,
-                address: destino,
-                details: carrito.map(function (item) {
-                    return {
-                        sku: item.productSku,
-                        quantity: item.quantity
-                    };
-                }),
-            };
+$(document).ajaxStart(function() {
+    $("#spinner-send").show();
+});
 
-
-            $.ajaxSetup({
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            console.log("Enviar carrito:", data);
-            // Aquí debes agregar el código para enviar el carrito al servidor
-
-            let parameters = {}
-            parameters.url = "http://localhost:8081/requests"
-            parameters.method = "POST"
-            parameters.data = JSON.stringify(data)
-            parameters.done = function (data, textStatus, jqXHR) {
-                console.log(`POST requests response status: ${textStatus}`)
-                alert("Solicitud ingresada exitosamente!")
-                window.location.href = "list.html"
-            }
-            parameters.fail = function (jqXHR, textStatus, errorThrown) {
-                console.log(`POST requests response status: ${textStatus}`)
-                console.log(`POST requests error: ${errorThrown}`)
-                alert("Ha ocurrido un error al ingresar la solicitud!")
-            }
-
-            callRestApi(parameters);
-        
-        } else {
-            alert("Por favor, agrega productos al carrito y especifica un destino.");
-        }
-    });
+$(document).ajaxStop(function() {
+    $("#spinner-send").hide();
 });

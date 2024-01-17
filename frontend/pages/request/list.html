@@ -94,7 +94,7 @@
 
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-item menu-open">
+                <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-cart-arrow-down"></i>
                         <p>
@@ -123,7 +123,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item  menu-open">
                     <a href="#" class="nav-link active">
                         <i class="nav-icon fas fa-file-word"></i>
                         <p>
@@ -182,18 +182,21 @@
                         <div class="card-body">
                             <table id="solicitudesTabla" class="table table-bordered table-hover">
                                 <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Sucursal</th>
-                                        <th>Dirección</th>
-                                        <th>Fecha</th>
-                                        <th>Número de Orden</th>
-                                        <th>Código de Seguimiento</th>
-                                        <th>Detalle</th>
-                                    </tr>
+                                <tr>
+                                    <th>Transportista</th>
+                                    <th>Sucursal</th>
+                                    <th>Dirección</th>
+                                    <th>Fecha</th>
+                                    <th>Número de Orden</th>
+                                    <th>Código de Seguimiento</th>
+                                    <th>Detalle</th>
+                                    <th>Acciones</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Los solicitudes se cargarán aquí -->
+                                <!-- El spinner se mostrará aquí mientras se cargan las solicitudes -->
+                                <img id="spinner" src="../../img/loading-buffering.gif" style="display: none;">
+                                <!-- Los solicitudes se cargarán aquí -->
                                 </tbody>
                             </table>
                         </div>
@@ -211,26 +214,30 @@
 
 <script>
     $(document).ready(function () {
+        $('#spinner').show();
         $.ajax({
-            url: 'http://localhost:8081/requests',
+            url: 'http://localhost:8081/api/v1/requests',
             method: 'GET',
             success: function (data) {
+                $('#spinner').hide();
                 data.forEach(function (solicitud) {
-                    $('#solicitudesTabla > tbody').append(`
-                        <tr>
-                            <td>
-                                <button id="btn_${solicitud.orderNumber}" data-track="${solicitud.trackCode}" class="btn btn-success">Consultar estado</button>
-                            </td>
-                            <td>${solicitud.subsidiary}</td>
-                            <td>${solicitud.address}</td>
-                            <td>${solicitud.date}</td>
-                            <td>${solicitud.orderNumber}</td>
-                            <td>${solicitud.trackCode}</td>
-                            <td id='order_${solicitud.orderNumber}'></td>
-                        </tr>
-                    `);
+                    $('#solicitudesTabla > tbody')
+                        .append(`
+                            <tr>
+                                <td>${solicitud.transport}</td>
+                                <td>${solicitud.subsidiary}</td>
+                                <td>${solicitud.address}</td>
+                                <td>${solicitud.date}</td>
+                                <td>${solicitud.orderNumber}</td>
+                                <td>${solicitud.trackCode}</td>
+                                <td id='order_${solicitud.orderNumber}'></td>
+                                <td>
+                                    <button id="btn_${solicitud.orderNumber}" data-track="${solicitud.trackCode}" class="btn btn-success" ${solicitud.trackCode ? '' : 'disabled'}>Consultar estado</button>
+                                </td>
+                            </tr>
+                        `);
 
-                    $(`#btn_${solicitud.orderNumber}`).click(function(){
+                    $(`#btn_${solicitud.orderNumber}`).click(function () {
                         const trackCode = $(`#btn_${solicitud.orderNumber}`).attr("data-track");
 
                         $.ajaxSetup({
@@ -241,7 +248,7 @@
                         });
 
                         $.ajax({
-                            url: `http://localhost:8081/requests/${trackCode}/status`,
+                            url: `http://localhost:8081/api/v1/requests/${trackCode}/status`,
                             type: 'GET',
                             success: function (data) {
                                 alert(`Estado de la solicutud: ${data.status}`)
@@ -249,35 +256,37 @@
                         });
                     });
 
-                    $(`#order_${solicitud.orderNumber}`).append(`
-                        <table id='table_${solicitud.orderNumber}' class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>SKU</th>
-                                    <th>Nombre</th>
-                                    <th>Precio</th>
-                                    <th>Cantidad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    `);
+                    $(`#order_${solicitud.orderNumber}`)
+                        .append(`
+                            <table id='table_${solicitud.orderNumber}' class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Nombre</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        `);
 
-                    solicitud.details.forEach(function(detail){
+                    solicitud.details.forEach(function (detail) {
                         console.log(detail)
                         $(`#table_${solicitud.orderNumber} > tbody`).append(`
-                            <tr>
-                                <td>${detail.sku}</td>
-                                <td>${detail.name}</td>
-                                <td>${detail.price}</td>
-                                <td>${detail.quantity}</td>
-                            </tr>
-                        `);
+                                                        <tr>
+                                                            <td>${detail.sku}</td>
+                                                            <td>${detail.name}</td>
+                                                            <td>${detail.price}</td>
+                                                            <td>${detail.quantity}</td>
+                                                        </tr>
+                                                    `);
                     });
                 });
             },
             error: function (error) {
+                $('#spinner').hide();
                 console.error('Error al cargar las solicitudes:', error);
             }
         });

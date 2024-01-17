@@ -255,7 +255,7 @@
             data.version = $("#version").val()
 
             let parameters = {}
-            parameters.url = "http://localhost:8081/products"
+            parameters.url = "http://localhost:8081/api/v1/products"
             parameters.method = "POST"
             parameters.data = JSON.stringify(data)
             parameters.done = function (data, textStatus, jqXHR) {

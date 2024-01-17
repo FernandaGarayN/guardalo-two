@@ -30,6 +30,8 @@ public class RequestEntity {
     private Long orderNumber;
     @Column(name = "track_code")
     private String trackCode;
+    @Column(name = "transport")
+    private String transport;
     @Builder.Default
     @OneToMany(
             mappedBy = "request",
@@ -37,5 +39,12 @@ public class RequestEntity {
             orphanRemoval = true,
             cascade = CascadeType.ALL)
     private Set<RequestDetailEntity> details = new HashSet<>();
+    @Builder.Default
+    @OneToMany(
+        mappedBy = "request",
+        fetch = FetchType.LAZY,
+        orphanRemoval = true,
+        cascade = CascadeType.ALL)
+    private Set<RequestDetailMPEntity> detailsMP = new HashSet<>();
 
 }

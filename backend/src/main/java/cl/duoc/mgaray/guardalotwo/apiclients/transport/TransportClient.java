@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "transport-client",
-        url = "http://172.20.10.4:8080",
+        url = "http://192.168.100.27:8080",
         configuration = FeignTransportConfig.class)
 public interface TransportClient {
     @PostMapping("/solicitudes")

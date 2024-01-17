@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
   private final ProductService productService;
@@ -59,8 +59,8 @@ public class ProductController {
   }
 
   @GetMapping("/search")
-  public ResponseEntity<List<ResponseGetProduct>> searchProducts(@RequestParam String term) {
-    var products = productService.searchProducts(term);
+  public ResponseEntity<List<ResponseGetProduct>> searchProducts(@RequestParam String term, @RequestParam String transportEnterprise) {
+    var products = productService.searchProducts(transportEnterprise, term);
     return ResponseEntity.ok(products.stream().map(this::toGetResponseWithValue).toList());
   }
 

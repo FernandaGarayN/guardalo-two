@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 public class NewRequestCmd {
+    private String transport;
     private String subsidiary;
     private String address;
     private List<NewRequestDetailCmd> details;

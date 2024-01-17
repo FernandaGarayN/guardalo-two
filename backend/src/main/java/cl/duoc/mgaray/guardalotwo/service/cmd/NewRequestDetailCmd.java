@@ -9,5 +9,8 @@ import lombok.Setter;
 @Builder
 public class NewRequestDetailCmd {
     private String sku;
+    private String name;
+    private String description;
+    private double price;
     private Long quantity;
 }

@@ -10,6 +10,7 @@ import cl.duoc.mgaray.guardalotwo.service.cmd.UpdateProductCmd;
 import cl.duoc.mgaray.guardalotwo.service.domain.Product;
 import cl.duoc.mgaray.guardalotwo.service.exception.FoundException;
 import cl.duoc.mgaray.guardalotwo.service.exception.NotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,14 +36,26 @@ public class ProductService {
 
   @Transactional(readOnly = true)
   public List<Product> getAllProducts() {
-    return productRepository.findAll().stream().map(this::toDomain).toList();
+    var products = new ArrayList<>(productRepository.findAll().stream().map(this::toDomain).toList());
+    var productsMusicPro = warehouseClient.getWarehouseProducts().getProducts().stream().map(this::toDomain).toList();
+    products.addAll(productsMusicPro);
+    return products;
   }
 
+  private Product toDomain(WarehouseProduct warehouseProduct) {
+    return Product.builder()
+        .sku(warehouseProduct.getCode())
+        .name(warehouseProduct.getName())
+        .description(warehouseProduct.getDescription())
+        .price(warehouseProduct.getRawPrice())
+        .stock(20)
+        .build();
+  }
 
 
   @Transactional(readOnly = true)
   public List<WarehouseProduct> getAllProductsMusicPro() {
-    return warehouseClient.getProducts().getProducts();
+    return warehouseClient.getWarehouseProducts().getProducts();
   }
 
   @Transactional(readOnly = true)
@@ -53,10 +66,17 @@ public class ProductService {
             .orElseThrow(() -> new NotFoundException("Product not found")));
   }
 
-  public List<Product> searchProducts(String term) {
-    List<ProductEntity> founds =
-        productRepository.findBySkuContainingOrNameContainingOrDescriptionContaining(term, term, term);
-    return toDomain(founds);
+  public List<Product> searchProducts(String transportEnterprise, String term) {
+    if ("telollevo".equals(transportEnterprise)) {
+      List<ProductEntity> founds =
+          productRepository.findBySkuContainingOrNameContainingOrDescriptionContaining(term, term, term);
+      return toDomain(founds);
+    } else {
+      var productsMusicPro = warehouseClient.getWarehouseProducts().getProducts().stream().map(this::toDomain).toList();
+      return productsMusicPro.stream()
+          .filter(p -> p.getSku().contains(term) || p.getName().contains(term) || p.getDescription().contains(term))
+          .toList();
+    }
   }
 
   @Transactional
