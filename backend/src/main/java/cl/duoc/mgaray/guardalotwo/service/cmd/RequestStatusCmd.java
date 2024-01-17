@@ -9,5 +9,4 @@ import lombok.Setter;
 @Builder
 public class RequestStatusCmd {
     private String trackCode;
-    private String transport;
 }

@@ -104,8 +104,10 @@ public class RequestService {
 
   @Transactional
   public String getRequestStatus(RequestStatusCmd cmd) {
+    var request = requestRepository.findByTrackCode(cmd.getTrackCode())
+            .orElseThrow(() -> new NotFoundException("Request not found"));
 
-    if ("telollevo".equalsIgnoreCase(cmd.getTransport())) {
+    if ("telollevo".equalsIgnoreCase(request.getTransport())) {
       var response = transportClient.getStatus(cmd.getTrackCode());
       return response.getStatus();
     } else {
