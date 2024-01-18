@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "http://192.168.100.27:8080",
         configuration = FeignTransportConfig.class)
 public interface TransportClient {
-    @PostMapping("/solicitudes")
+    @PostMapping("/api/v1/solicitudes")
     TransportResponsePostRequest postRequest(@RequestBody TransportRequestPostRequest request);
 
-    @GetMapping("/solicitudes/{trackCode}/estado")
+    @GetMapping("/api/v1/solicitudes/{trackCode}/estado")
     TransportResponseGetStatus getStatus(@PathVariable String trackCode);
 }
