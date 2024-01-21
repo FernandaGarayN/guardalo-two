@@ -20,6 +20,8 @@ public class RequestEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "warehouse", nullable = false)
+    private String warehouse;
     @Column(name = "subsidiary", nullable = false)
     private String subsidiary;
     @Column(name = "address", nullable = false)

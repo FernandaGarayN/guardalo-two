@@ -13,6 +13,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseGetRequest {
     private Long id;
+    private String warehouse;
     private String subsidiary;
     private String address;
     private LocalDate date;

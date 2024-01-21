@@ -7,18 +7,9 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class RequestPostRequestDetail {
+public class RequestPostTransportRequest {
   @NotNull
-  private Long id;
+  private Long orderNumber;
   @NotBlank
-  private String sku;
-  @NotNull
-  private Long quantity;
-  @NotBlank
-  private String description;
-  @NotNull
-  private double price;
-  @NotBlank
-  private String name;
-
+  private String transport;
 }

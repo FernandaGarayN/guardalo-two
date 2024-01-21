@@ -1,4 +1,4 @@
-package cl.duoc.mgaray.guardalotwo.apiclients.warehouse;
+package cl.duoc.mgaray.guardalotwo.apiclients.musicpro;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WarehouseProduct {
-  private String id;
+public class MusicProWarehouseProduct {
+  private Integer id;
   @JsonProperty("codigo")
   private String code;
   @JsonProperty("nombre")
@@ -27,4 +27,6 @@ public class WarehouseProduct {
   private String assetRaw;
   @JsonProperty("estado")
   private Integer status;
+  private Integer stock;
+  private Integer cantidad;
 }

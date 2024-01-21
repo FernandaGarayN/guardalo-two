@@ -100,27 +100,27 @@ INSERT INTO products (sku, name, description, price, stock) VALUES
 ('SKU1099', 'Púa de Guitarra', 'Juego de 12 púas de guitarra de varios grosores', 5.00, 60),
 ('SKU1100', 'Soporte de Partitura para Micrófono', 'Soporte de partitura que se acopla a los soportes de micrófono', 15.00, 30);
 
-INSERT INTO requests (subsidiary, address, date, order_number, transport) VALUES
-('Sucursal 1', 'Calle Falsa 123, Ciudad A', '2024-01-01', 1001, 'Fake transport'),
-('Sucursal 2', 'Avenida Principal 456, Ciudad B', '2024-01-02', 1002, 'Fake transport'),
-('Sucursal 3', 'Plaza Central 789, Ciudad C', '2024-01-03', 1003, 'Fake transport'),
-('Sucursal 4', 'Barrio Alto 321, Ciudad D', '2024-01-04', 1004, 'Fake transport'),
-('Sucursal 5', 'Zona Industrial 654, Ciudad E', '2024-01-05', 1005, 'Fake transport'),
-('Sucursal 6', 'Distrito Comercial 987, Ciudad F', '2024-01-06', 1006, 'Fake transport'),
-('Sucursal 7', 'Ruta 20 km 5, Ciudad G', '2024-01-07', 1007, 'Fake transport'),
-('Sucursal 8', 'Camino Viejo 210, Ciudad H', '2024-01-08', 1008, 'Fake transport'),
-('Sucursal 9', 'Paseo del Río 543, Ciudad I', '2024-01-09', 1009, 'Fake transport'),
-('Sucursal 10', 'Sector Norte 678, Ciudad J', '2024-01-10', 1010, 'Fake transport'),
-('Sucursal 11', 'Callejón del Sur 987, Ciudad K', '2024-01-11', 1011, 'Fake transport'),
-('Sucursal 12', 'Avenida de los Árboles 654, Ciudad L', '2024-01-12', 1012, 'Fake transport'),
-('Sucursal 13', 'Parque Industrial 321, Ciudad M', '2024-01-13', 1013, 'Fake transport'),
-('Sucursal 14', 'Centro Histórico 432, Ciudad N', '2024-01-14', 1014, 'Fake transport'),
-('Sucursal 15', 'Boulevard del Lago 369, Ciudad O', '2024-01-15', 1015, 'Fake transport'),
-('Sucursal 16', 'Puerto Comercial 258, Ciudad P', '2024-01-16', 1016, 'Fake transport'),
-('Sucursal 17', 'Zona Turística 147, Ciudad Q', '2024-01-17', 1017, 'Fake transport'),
-('Sucursal 18', 'Circunvalación 963, Ciudad R', '2024-01-18', 1018, 'Fake transport'),
-('Sucursal 19', 'Calle del Mercado 852, Ciudad S', '2024-01-19', 1019, 'Fake transport'),
-('Sucursal 20', 'Ruta del Sol 741, Ciudad T', '2024-01-20', 1020, 'Fake transport');
+INSERT INTO requests (warehouse, subsidiary, address, date, order_number) VALUES
+('guardalotwo', 'Sucursal 1', 'Calle Falsa 123, Ciudad A', '2024-01-01', 1001),
+('guardalotwo', 'Sucursal 2', 'Avenida Principal 456, Ciudad B', '2024-01-02', 1002),
+('guardalotwo', 'Sucursal 3', 'Plaza Central 789, Ciudad C', '2024-01-03', 1003),
+('guardalotwo', 'Sucursal 4', 'Barrio Alto 321, Ciudad D', '2024-01-04', 1004),
+('guardalotwo', 'Sucursal 5', 'Zona Industrial 654, Ciudad E', '2024-01-05', 1005),
+('guardalotwo', 'Sucursal 6', 'Distrito Comercial 987, Ciudad F', '2024-01-06', 1006),
+('guardalotwo', 'Sucursal 7', 'Ruta 20 km 5, Ciudad G', '2024-01-07', 1007),
+('guardalotwo', 'Sucursal 8', 'Camino Viejo 210, Ciudad H', '2024-01-08', 1008),
+('guardalotwo', 'Sucursal 9', 'Paseo del Río 543, Ciudad I', '2024-01-09', 1009),
+('guardalotwo', 'Sucursal 10', 'Sector Norte 678, Ciudad J', '2024-01-10', 1010),
+('guardalotwo', 'Sucursal 11', 'Callejón del Sur 987, Ciudad K', '2024-01-11', 1011),
+('guardalotwo', 'Sucursal 12', 'Avenida de los Árboles 654, Ciudad L', '2024-01-12', 1012),
+('guardalotwo', 'Sucursal 13', 'Parque Industrial 321, Ciudad M', '2024-01-13', 1013),
+('guardalotwo', 'Sucursal 14', 'Centro Histórico 432, Ciudad N', '2024-01-14', 1014),
+('guardalotwo', 'Sucursal 15', 'Boulevard del Lago 369, Ciudad O', '2024-01-15', 1015),
+('guardalotwo', 'Sucursal 16', 'Puerto Comercial 258, Ciudad P', '2024-01-16', 1016),
+('guardalotwo', 'Sucursal 17', 'Zona Turística 147, Ciudad Q', '2024-01-17', 1017),
+('guardalotwo', 'Sucursal 18', 'Circunvalación 963, Ciudad R', '2024-01-18', 1018),
+('guardalotwo', 'Sucursal 19', 'Calle del Mercado 852, Ciudad S', '2024-01-19', 1019),
+('guardalotwo', 'Sucursal 20', 'Ruta del Sol 741, Ciudad T', '2024-01-20', 1020);
 
 INSERT INTO request_details (request_id, product_id, quantity) VALUES
 -- Detalles para la solicitud 1

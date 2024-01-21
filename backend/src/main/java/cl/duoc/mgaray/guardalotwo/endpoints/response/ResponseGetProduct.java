@@ -16,15 +16,6 @@ public class ResponseGetProduct {
   private String description;
   private double price;
   private int stock;
-  private String image;
-  private boolean active;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
-  private LocalDateTime deletedAt;
-  private String deletedBy;
-  private String updatedBy;
-  private String createdBy;
-  private long version;
   @Setter
   private String value;
   @Setter

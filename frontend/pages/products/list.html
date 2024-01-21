@@ -50,7 +50,7 @@
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                    <i class="fas fa-users mr-2"></i> 8 friend requests
+                    <i class="fas fa-users mr-2"></i> 8 friend productsRequests
                     <span class="float-right text-muted text-sm">12 hours</span>
                 </a>
                 <div class="dropdown-divider"></div>
@@ -104,12 +104,6 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="search.html" class="nav-link">
-                                <i class="fas fa-search nav-icon"></i>
-                                <p>Búsqueda de Productos</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="#" class="nav-link active">
                                 <i class="fas fa-plus nav-icon"></i>
                                 <p>Lista de Productos</p>
@@ -133,17 +127,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../request/list.html" class="nav-link active">
+                            <a href="../request/list.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Lista de Solicitudes</p>
                             </a>
                         </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../request/new.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Nueva Solicitud</p>
+                            <a href="../request/new-products-request.html" class="nav-link">
+                                <i class="fas fa-plus nav-icon"></i>
+                                <p>Nueva Solicitud de Productos</p>
                             </a>
                         </li>
                     </ul>
@@ -188,13 +180,21 @@
                                         <th>Descripción</th>
                                         <th>Precio</th>
                                         <th>Stock</th>
-                                        <th>Versión</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!-- Los productos se cargarán aquí -->
                                 </tbody>
                             </table>
+                            <div class="pagination mt-5">
+                                <ul id="paginationList" class="pagination">
+                                    <li id="firstPageBtn" class="page-item"><a class="page-link" href="#"><i class="fas fa-step-backward"></i> Primera</a></li>
+                                    <li id="previousPageBtn" class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-left"></i> Anterior</a></li>
+                                    <!-- Los números de página se agregarán aquí -->
+                                    <li id="nextPageBtn" class="page-item"><a class="page-link" href="#">Siguiente <i class="fas fa-chevron-right"></i></a></li>
+                                    <li id="lastPageBtn" class="page-item"><a class="page-link" href="#">Última <i class="fas fa-step-forward"></i></a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -210,27 +210,105 @@
 
 <script>
     $(document).ready(function () {
-        $.ajax({
-            url: 'http://localhost:8081/api/v1/products',
-            method: 'GET',
-            success: function (data) {
-                data.forEach(function (producto) {
-                    $('#productosTabla > tbody').append(`
+        let totalPages;
+
+        let currentPage = 0;
+        const pageSize = 10;
+
+        function updatePageNumbers() {
+            $('#paginationList').children().slice(2, -2).remove(); // Elimina los botones de número de página existentes
+            for (let i = 0; i < totalPages; i++) {
+                let li = $(`<li class="page-item"><a class="page-link" href="#">${i + 1}</a></li>`);
+                if (i === currentPage) {
+                    li.addClass('active')
+                    li.find('a').addClass('font-weight-bold text-white bg-dark'); // Agrega la clase 'font-weight-bold' al enlace
+                    li.toggleClass('disabled', true); // Deshabilita el botón si es la página actual
+                }
+                li.click(function (event) {
+                    event.preventDefault();
+                    currentPage = i;
+                    loadRequests();
+                });
+                $('#nextPageBtn').before(li); // Agrega el botón antes del botón "Siguiente"
+            }
+            // Deshabilita o habilita los botones de "Primera página" y "Anterior" según sea necesario
+            $("#firstPageBtn").toggleClass('disabled', currentPage === 0);
+            $("#previousPageBtn").toggleClass('disabled', currentPage === 0);
+            // Deshabilita o habilita los botones de "Última página" y "Siguiente" según sea necesario
+            $("#lastPageBtn").toggleClass('disabled', currentPage === totalPages - 1);
+            $("#nextPageBtn").toggleClass('disabled', currentPage === totalPages - 1);
+        }
+
+        function loadTotalPages() {
+            $.ajax({
+                url: `http://localhost:8081/api/v1/warehouses/products/count`,
+                method: 'GET',
+                success: function (data) {
+                    totalPages = Math.ceil(data / pageSize);
+                    updatePageNumbers();
+                },
+                error: function (error) {
+                    console.error('Error al cargar el total de páginas:', error);
+                }
+            });
+        }
+
+        loadTotalPages();
+
+        function loadRequests() {
+            $('#productosTabla > tbody').empty()
+            $.ajax({
+                url: `http://localhost:8081/api/v1/warehouses/products?pageNo=${currentPage}&pageSize=${pageSize}`,
+                method: 'GET',
+                success: function (data) {
+                    data.forEach(function (producto) {
+                        $('#productosTabla > tbody').append(`
                         <tr>
                             <td>${producto.sku}</td>
                             <td>${producto.name}</td>
                             <td>${producto.description}</td>
                             <td>${producto.price}</td>
                             <td>${producto.stock}</td>
-                            <td>${producto.version}</td>
                         </tr>
                     `);
-                });
-            },
-            error: function (error) {
-                console.error('Error al cargar los productos:', error);
+                    });
+
+                    updatePageNumbers();
+                },
+                error: function (error) {
+                    console.error('Error al cargar los productos:', error);
+                }
+            });
+
+        }
+
+
+
+        $("#firstPageBtn").click(function () {
+            currentPage = 0;
+            loadRequests();
+        })
+
+        $("#lastPageBtn").click(function () {
+            currentPage = totalPages - 1;
+            loadRequests();
+        })
+
+        $("#previousPageBtn").click(function () {
+            if (currentPage > 0) {
+                currentPage--;
+                loadRequests();
             }
-        });
+        })
+
+        $("#nextPageBtn").click(function () {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                loadRequests();
+            }
+        })
+
+        loadRequests();
     });
 </script>
 

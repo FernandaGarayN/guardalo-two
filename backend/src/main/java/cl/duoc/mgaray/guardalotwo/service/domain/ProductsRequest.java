@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Builder
 @Getter
 @Setter
-public class Request {
+public class ProductsRequest {
     private Long id;
+    private String warehouse;
     private String subsidiary;
     private String address;
     private LocalDate date;

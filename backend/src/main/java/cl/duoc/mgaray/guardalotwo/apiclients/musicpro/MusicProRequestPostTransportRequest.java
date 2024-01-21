@@ -1,4 +1,4 @@
-package cl.duoc.mgaray.guardalotwo.apiclients.warehouse;
+package cl.duoc.mgaray.guardalotwo.apiclients.musicpro;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WarehouseRequestPostTransportRequest {
+public class MusicProRequestPostTransportRequest {
   @JsonProperty("nombre_origen")
   private String originName;
   @JsonProperty("direccion_origen")

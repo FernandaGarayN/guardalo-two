@@ -50,7 +50,7 @@
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                    <i class="fas fa-users mr-2"></i> 8 friend requests
+                    <i class="fas fa-users mr-2"></i> 8 friend productsRequests
                     <span class="float-right text-muted text-sm">12 hours</span>
                 </a>
                 <div class="dropdown-divider"></div>
@@ -104,12 +104,6 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../products/search.html" class="nav-link">
-                                <i class="fas fa-search nav-icon"></i>
-                                <p>Búsqueda de Productos</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="../products/list.html" class="nav-link">
                                 <i class="fas fa-plus nav-icon"></i>
                                 <p>Lista de Productos</p>
@@ -141,8 +135,8 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="new.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                            <a href="new-products-request.html" class="nav-link">
+                                <i class="fas fa-plus nav-icon"></i>
                                 <p>Nueva Solicitud</p>
                             </a>
                         </li>
@@ -183,28 +177,95 @@
                             <table id="solicitudesTabla" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
-                                    <th>Transportista</th>
-                                    <th>Sucursal</th>
-                                    <th>Dirección</th>
+                                    <th>Desde</th>
+                                    <th>Hacia</th>
                                     <th>Fecha</th>
                                     <th>Número de Orden</th>
+                                    <th>SKU</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                    <th>Transportista</th>
                                     <th>Código de Seguimiento</th>
-                                    <th>Detalle</th>
                                     <th>Acciones</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <!-- El spinner se mostrará aquí mientras se cargan las solicitudes -->
-                                <img id="spinner" src="../../img/loading-buffering.gif" style="display: none;">
+                                <img id="spinner" src="../../img/loading-buffering.gif" style="display: none;" width="50" height="50">
                                 <!-- Los solicitudes se cargarán aquí -->
                                 </tbody>
                             </table>
+                            <div class="pagination mt-5">
+                                <ul id="paginationList" class="pagination">
+                                    <li id="firstPageBtn" class="page-item"><a class="page-link" href="#"><i class="fas fa-step-backward"></i> Primera</a></li>
+                                    <li id="previousPageBtn" class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-left"></i> Anterior</a></li>
+                                    <!-- Los números de página se agregarán aquí -->
+                                    <li id="nextPageBtn" class="page-item"><a class="page-link" href="#">Siguiente <i class="fas fa-chevron-right"></i></a></li>
+                                    <li id="lastPageBtn" class="page-item"><a class="page-link" href="#">Última <i class="fas fa-step-forward"></i></a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="assignTransportModal" tabindex="-1" role="dialog"
+     aria-labelledby="assignTransportModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignTransportModalLabel">Asignar transporte</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="transportSelect">Transporte</label>
+                        <select class="form-control" id="transportSelect">
+                            <option value="">SELECCIONE UNA EMPRESA DE TRANSPORTE</option>
+                            <option value="telollevo">Te Lo Llevo</option>
+                            <option value="musicpro">Music Pro</option>
+                            <!-- Opciones de transporte aquí -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="orderNumberDisplay">Número de orden</label>
+                        <input type="text" readonly class="form-control" id="orderNumberDisplay" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="trackCodeDisplay">Código de Seguimiento</label>
+                        <input type="text" readonly class="form-control" id="trackCodeDisplay" value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="sendToTransportBtn" class="btn btn-primary">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="successMessage" class="alert alert-success"
+     style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; padding: 20px; border-radius: 25px;">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <i class="fas fa-check-circle mt-4 mr-1"></i><p style="display: inline;" class="mr-3"></p>
+</div>
+
+<div id="dangerMessage" class="alert alert-danger"
+     style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; padding: 20px; border-radius: 25px;">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <i class="fas fa-check-circle mt-4 mr-1"></i><p style="display: inline;" class="mr-3"></p>
 </div>
 
 <script src="../../js/jquery.min.js"></script>
@@ -215,81 +276,228 @@
 <script>
     $(document).ready(function () {
         $('#spinner').show();
-        $.ajax({
-            url: 'http://localhost:8081/api/v1/requests',
-            method: 'GET',
-            success: function (data) {
-                $('#spinner').hide();
-                data.forEach(function (solicitud) {
-                    $('#solicitudesTabla > tbody')
-                        .append(`
-                            <tr>
-                                <td>${solicitud.transport}</td>
-                                <td>${solicitud.subsidiary}</td>
-                                <td>${solicitud.address}</td>
-                                <td>${solicitud.date}</td>
-                                <td>${solicitud.orderNumber}</td>
-                                <td>${solicitud.trackCode}</td>
-                                <td id='order_${solicitud.orderNumber}'></td>
-                                <td>
-                                    <button id="btn_${solicitud.orderNumber}" data-track="${solicitud.trackCode}" class="btn btn-success" ${solicitud.trackCode ? '' : 'disabled'}>Consultar estado</button>
-                                </td>
-                            </tr>
-                        `);
 
-                    $(`#btn_${solicitud.orderNumber}`).click(function () {
-                        const trackCode = $(`#btn_${solicitud.orderNumber}`).attr("data-track");
+        let totalPages;
 
-                        $.ajaxSetup({
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            }
-                        });
-
-                        $.ajax({
-                            url: `http://localhost:8081/api/v1/requests/${trackCode}/status`,
-                            type: 'GET',
-                            success: function (data) {
-                                alert(`Estado de la solicutud: ${data.status}`)
-                            }
-                        });
-                    });
-
-                    $(`#order_${solicitud.orderNumber}`)
-                        .append(`
-                            <table id='table_${solicitud.orderNumber}' class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>SKU</th>
-                                        <th>Nombre</th>
-                                        <th>Precio</th>
-                                        <th>Cantidad</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        `);
-
-                    solicitud.details.forEach(function (detail) {
-                        console.log(detail)
-                        $(`#table_${solicitud.orderNumber} > tbody`).append(`
-                                                        <tr>
-                                                            <td>${detail.sku}</td>
-                                                            <td>${detail.name}</td>
-                                                            <td>${detail.price}</td>
-                                                            <td>${detail.quantity}</td>
-                                                        </tr>
-                                                    `);
-                    });
+        function updatePageNumbers() {
+            $('#paginationList').children().slice(2, -2).remove(); // Elimina los botones de número de página existentes
+            for (let i = 0; i < totalPages; i++) {
+                let li = $(`<li class="page-item"><a class="page-link" href="#">${i + 1}</a></li>`);
+                if (i === currentPage) {
+                    li.addClass('active')
+                    li.find('a').addClass('font-weight-bold text-white bg-dark'); // Agrega la clase 'font-weight-bold' al enlace
+                    li.toggleClass('disabled', true); // Deshabilita el botón si es la página actual
+                }
+                li.click(function (event) {
+                    event.preventDefault();
+                    currentPage = i;
+                    loadRequests();
                 });
-            },
-            error: function (error) {
-                $('#spinner').hide();
-                console.error('Error al cargar las solicitudes:', error);
+                $('#nextPageBtn').before(li); // Agrega el botón antes del botón "Siguiente"
             }
-        });
+            // Deshabilita o habilita los botones de "Primera página" y "Anterior" según sea necesario
+            $("#firstPageBtn").toggleClass('disabled', currentPage === 0);
+            $("#previousPageBtn").toggleClass('disabled', currentPage === 0);
+            // Deshabilita o habilita los botones de "Última página" y "Siguiente" según sea necesario
+            $("#lastPageBtn").toggleClass('disabled', currentPage === totalPages - 1);
+            $("#nextPageBtn").toggleClass('disabled', currentPage === totalPages - 1);
+        }
+
+        function loadTotalPages() {
+            $.ajax({
+                url: `http://localhost:8081/api/v1/warehouses/requests/count`,
+                method: 'GET',
+                success: function (data) {
+                    totalPages = Math.ceil(data / pageSize);
+                    updatePageNumbers();
+                },
+                error: function (error) {
+                    console.error('Error al cargar el total de páginas:', error);
+                }
+            });
+        }
+
+        loadTotalPages();
+
+        function openAssignTransportModal(orderNumber) {
+            $('#orderNumberDisplay').val(orderNumber)
+            $('#assignTransportModal').modal('show');
+        }
+
+        let transportistas = {
+            'telollevo': 'Te Lo Llevo',
+            'musicpro': 'Music Pro'
+        };
+
+        function assignTransport() {
+            let transport = $('#transportSelect').val();
+            let orderNumber = $('#orderNumberDisplay').val()
+            if (transport) {
+                $.ajax({
+                    url: `http://localhost:8081/api/v1/warehouses/transport`,
+                    type: 'POST',
+                    data: JSON.stringify({orderNumber: orderNumber, transport: transport}),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        // Muestra el código de seguimiento en el modal
+                        $('#trackCodeDisplay').val(data.trackCode);
+                        $(`#btn_status_${orderNumber}`).attr('data-track', data.trackCode);
+                        // Bloquea los campos y el botón
+                        $('#transportSelect').prop('disabled', true);
+                        $('#orderNumberDisplay').prop('disabled', true);
+                        $('#sendToTransportBtn').prop('disabled', true);
+                        // Actualiza las celdas de transportista y código de seguimiento en la tabla
+                        $(`#btn_status_${orderNumber}`).parent().prev().text(data.trackCode);
+                        $(`#btn_status_${orderNumber}`).parent().prev().prev().text(transportistas[transport]);
+                        // Muestra un mensaje de éxito
+                        $('#successMessage p').text(`El transporte ha sido asignado exitosamente y el código de seguimiento ha sido generado: ${data.trackCode}`);
+                        $('#successMessage').fadeIn(500).delay(3000).fadeOut(500);
+                        // Oculta el botón de asignar transporte y muestra el botón de consultar estado
+                        $(`#btn_modal_${orderNumber}`).hide();
+                        $(`#btn_status_${orderNumber}`).show();
+                        // Cierra el modal después de que el mensaje de éxito se haya mostrado
+                        setTimeout(function () {
+                            $('#assignTransportModal').modal('hide');
+                            $('#trackCodeDisplay').val(null);
+                        }, 1000); // 1000 ms de delay
+                    },
+                    error: function () {
+                        $('#dangerMessage p').text('No se ha podido asignar el transporte');
+                        $('#dangerMessage').fadeIn(500).delay(3000).fadeOut(500);
+                    }
+                });
+            } else {
+                $('#dangerMessage p').text('Por favor, selecciona un transporte');
+                $('#dangerMessage').fadeIn(500).delay(3000).fadeOut(500);
+            }
+        }
+
+        $("#sendToTransportBtn").click(function () {
+            assignTransport()
+        })
+
+        let currentPage = 0;
+        const pageSize = 10;
+
+        function loadRequests() {
+            $('#solicitudesTabla > tbody').empty()
+            $.ajax({
+                url: `http://localhost:8081/api/v1/warehouses/requests?pageNo=${currentPage}&pageSize=${pageSize}`,
+                method: 'GET',
+                success: function (data) {
+                    $('#spinner').hide();
+                    data.forEach(function (solicitud) {
+                        let detailsCount = solicitud.details.length;
+                        
+                        if (detailsCount >0) {
+                            solicitud.details.forEach(function (detail, index) {
+                                let row = $(`
+                                <tr>
+                                    ${index === 0 ? `<td rowspan="${detailsCount}">${solicitud.warehouse || 'Sin información'}</td>
+                                    <td rowspan="${detailsCount}">${solicitud.subsidiary ? solicitud.subsidiary + ' (' + solicitud.address + ')' : 'Sin información'}</td>
+                                    <td rowspan="${detailsCount}">${solicitud.date || 'Sin información'}</td>
+                                    <td rowspan="${detailsCount}">${solicitud.orderNumber || 'Sin información'}</td>` : ''}
+                                    <td>${detail.sku || 'Sin información'}</td>
+                                    <td>${detail.name || 'Sin información'}</td>
+                                    <td>${detail.price || 'Sin información'}</td>
+                                    <td>${detail.quantity || 'Sin información'}</td>
+                                    ${index === 0 ? `<td rowspan="${detailsCount}">${solicitud.transport || 'Sin información'}</td>
+                                    <td rowspan="${detailsCount}">${solicitud.trackCode || 'Sin información'}</td>
+                                    <td rowspan="${detailsCount}">
+                                        <button id="btn_status_${solicitud.orderNumber}" data-track="${solicitud.trackCode}" class="btn btn-success" ${solicitud.transport ? '' : 'style="display: none;"'}>Consultar estado</button>
+                                        <button id="btn_modal_${solicitud.orderNumber}" class="btn btn-primary" ${solicitud.transport ? 'style="display: none;"' : ''}>Asignar transporte</button>
+                                    </td>` : ''}
+                                </tr>
+                            `);
+
+                                $('#solicitudesTabla > tbody').append(row);
+                            });
+                            
+                        } else {
+                            let row = $(`
+                                <tr>
+                                    <td>${solicitud.warehouse || 'Sin información'}</td>
+                                    <td>${solicitud.subsidiary ? solicitud.subsidiary + ' (' + solicitud.address + ')' : 'Sin información'}</td>
+                                    <td>${solicitud.date || 'Sin información'}</td>
+                                    <td>${solicitud.orderNumber || 'Sin información'}</td>
+                                    <td>Sin información</td>
+                                    <td>Sin información</td>
+                                    <td>Sin información</td>
+                                    <td>Sin información</td>
+                                    <td>${solicitud.transport || 'Sin información'}</td>
+                                    <td>${solicitud.trackCode || 'Sin información'}</td>
+                                    <td>
+                                        <button id="btn_status_${solicitud.orderNumber}" data-track="${solicitud.trackCode}" class="btn btn-success" ${solicitud.transport ? '' : 'style="display: none;"'}>Consultar estado</button>
+                                        <button id="btn_modal_${solicitud.orderNumber}" class="btn btn-primary" disabled>Asignar transporte</button>
+                                    </td>
+                                </tr>
+                            `);
+                            $('#solicitudesTabla > tbody').append(row);
+                        }
+
+
+                        $(`#btn_modal_${solicitud.orderNumber}`).click(function () {
+                            openAssignTransportModal(solicitud.orderNumber)
+                        });
+
+                        $(`#btn_status_${solicitud.orderNumber}`).click(function () {
+                            const trackCode = $(this).attr("data-track");
+
+                            $.ajaxSetup({
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+
+                            $.ajax({
+                                url: `http://localhost:8081/api/v1/warehouses/transport/${trackCode}/status`,
+                                type: 'GET',
+                                success: function (data) {
+                                    $('#successMessage p').text(`Estado de la solicitud: ${data.status}`);
+                                    $('#successMessage').fadeIn(500).delay(3000).fadeOut(500);
+                                }
+                            });
+                        });
+                        
+                    });
+                    
+                    updatePageNumbers();
+                },
+                error: function (error) {
+                    $('#spinner').hide();
+                    $('#dangerMessage p').text('Error al cargar las solicitudes');
+                    $('#dangerMessage').fadeIn(500).delay(3000).fadeOut(500);
+                    console.error('Error al cargar las solicitudes:', error);
+                }
+            });
+        }
+
+        $("#firstPageBtn").click(function () {
+            currentPage = 0;
+            loadRequests();
+        })
+
+        $("#lastPageBtn").click(function () {
+            currentPage = totalPages - 1;
+            loadRequests();
+        })
+
+        $("#previousPageBtn").click(function () {
+            if (currentPage > 0) {
+                currentPage--;
+                loadRequests();
+            }
+        })
+
+        $("#nextPageBtn").click(function () {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                loadRequests();
+            }
+        })
+
+        loadRequests();
     });
 </script>
 

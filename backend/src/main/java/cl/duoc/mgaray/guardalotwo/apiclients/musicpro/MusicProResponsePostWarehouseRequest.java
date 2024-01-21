@@ -1,4 +1,4 @@
-package cl.duoc.mgaray.guardalotwo.apiclients.transport;
+package cl.duoc.mgaray.guardalotwo.apiclients.musicpro;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransportResponsePostRequest {
-    @JsonProperty("codigoSeguimiento")
-    private String trackCode;
+public class MusicProResponsePostWarehouseRequest {
+  private String message;
+  @JsonProperty("contenido")
+  private String content;
 }

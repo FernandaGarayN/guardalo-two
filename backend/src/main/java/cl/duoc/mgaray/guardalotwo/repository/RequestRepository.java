@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<RequestEntity, Long> {
     RequestEntity getFirstByOrderByOrderNumberDesc();
-
     Optional<RequestEntity> findByOrderNumber(Long orderNumber);
-
     Optional<RequestEntity> findByTrackCode(String trackCode);
 }

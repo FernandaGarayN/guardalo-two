@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class NewRequestDetailCmd {
+    private Long id;
     private String sku;
     private String name;
     private String description;

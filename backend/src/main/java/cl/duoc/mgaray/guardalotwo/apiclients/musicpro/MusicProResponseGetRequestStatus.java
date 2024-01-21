@@ -1,4 +1,4 @@
-package cl.duoc.mgaray.guardalotwo.apiclients.warehouse;
+package cl.duoc.mgaray.guardalotwo.apiclients.musicpro;
 
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WarehouseResponseGetRequestStatus {
+public class MusicProResponseGetRequestStatus {
   private Integer status;
   private Map<String, Object> result;
 

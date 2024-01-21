@@ -1,4 +1,4 @@
-package cl.duoc.mgaray.guardalotwo.apiclients.transport;
+package cl.duoc.mgaray.guardalotwo.apiclients.common;
 
 import cl.duoc.mgaray.guardalotwo.apiclients.exception.BadRequestException;
 import cl.duoc.mgaray.guardalotwo.apiclients.exception.ForbiddenException;
@@ -8,7 +8,7 @@ import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TransportErrorDecoder implements ErrorDecoder {
+public class CommonErrorDecoder implements ErrorDecoder {
     private final ErrorDecoder defaultErrorDecoder = new Default();
     @Override
     public Exception decode(String methodKey, Response response) {

@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 public class RequestPostRequest {
     @NotBlank
-    private String transport;
+    private String warehouse;
     @NotBlank
     private String subsidiary;
     @NotBlank

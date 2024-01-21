@@ -1,4 +1,4 @@
-package cl.duoc.mgaray.guardalotwo.apiclients.transport;
+package cl.duoc.mgaray.guardalotwo.apiclients.telollevo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class TransportRequestPostRequest {
+public class TeLoLlevoTransportRequestPostRequest {
     @JsonProperty("numeroDeOrden")
     private String orderNumber;
     @JsonProperty("origen")
