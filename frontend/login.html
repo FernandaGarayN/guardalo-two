@@ -1,54 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Guárdalo Two | Log in</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <link rel="stylesheet" href="css/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="css/bootstrap/icheck-bootstrap.min.css">
-  <link rel="stylesheet" href="css/adminlte.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Guárdalo Two | Log in</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="css/font-awesome/css/all.min.css">
+    <link rel="stylesheet" href="css/bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="css/adminlte.min.css">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
-  <div class="login-logo"><b>Guárdalo</b>TWO</div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Ingresa para iniciar tu sesión</p>
+    <div class="login-logo"><b>Guárdalo</b>TWO</div>
+    <!-- /.login-logo -->
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Ingresa para iniciar tu sesión</p>
 
-      <div class="input-group mb-3">
-        <input type="text" id="username" class="form-control" placeholder="Usuario">
-        <div class="input-group-append">
-          <div class="input-group-text">
-            <span class="fas fa-envelope"></span>
-          </div>
+            <div class="input-group mb-3">
+                <input type="text" id="username" class="form-control" placeholder="Usuario" value="user01">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="password" id="password" class="form-control" placeholder="Contraseña" value="Pass1234!">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="icheck-primary">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Recordarme</label>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-4">
+                    <button id="login" class="btn btn-primary btn-block">Ingresar</button>
+                </div>
+                <!-- /.col -->
+            </div>
         </div>
-      </div>
-      <div class="input-group mb-3">
-        <input type="password" id="password" class="form-control" placeholder="Contraseña">
-        <div class="input-group-append">
-          <div class="input-group-text">
-            <span class="fas fa-lock"></span>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-8">
-          <div class="icheck-primary">
-            <input type="checkbox" id="remember">
-            <label for="remember">Recordarme</label>
-          </div>
-        </div>
-        <!-- /.col -->
-        <div class="col-4">
-          <button id="login" class="btn btn-primary btn-block">Ingresar</button>
-        </div>
-        <!-- /.col -->
-      </div>
+        <!-- /.login-card-body -->
     </div>
-    <!-- /.login-card-body -->
-  </div>
 </div>
 <!-- /.login-box -->
 
@@ -56,48 +57,48 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/adminlte.min.js"></script>
 <script>
-  $(document).ready(function() {
-    // Evento al hacer clic en el botón de login
-    $('#login').click(function(e) {
-        e.preventDefault(); // Previene la recarga de la página
+    $(document).ready(function () {
+        // Evento al hacer clic en el botón de login
+        $('#login').click(function (e) {
+            e.preventDefault(); // Previene la recarga de la página
 
-        // Recoge los datos del usuario y la contraseña
-        var username = $('#username').val();
-        var password = $('#password').val();
+            // Recoge los datos del usuario y la contraseña
+            const username = $('#username').val();
+            const password = $('#password').val();
 
-        // Datos a enviar
-        var data = {
-            userName: username,
-            password: password
-        };
+            // Datos a enviar
+            const data = {
+                userName: username,
+                password: password
+            };
 
-        // Solicitud AJAX
-        $.ajax({
-            type: 'POST',
-            url: 'http://localhost:8081/users/login',
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(response) {
-                // Si el inicio de sesión es exitoso
-                if (response.success) {
-                    alert("Login exitoso");
-                    window.location.href = "dashboard.html"; // Redirecciona a la página del dashboard
+            // Solicitud AJAX
+            $.ajax({
+                type: 'POST',
+                url: 'http://localhost:8081/api/v1/users/login',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    // Si el inicio de sesión es exitoso
+                    if (response.success) {
+                        alert("Login exitoso");
+                        window.location.href = "dashboard.html"; // Redirecciona a la página del dashboard
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // Manejo de errores basado en el código de estado
+                    if (xhr.status === 404) {
+                        alert("Usuario no encontrado");
+                    } else if (xhr.status === 500) {
+                        alert("Error en el servidor, intente de nuevo");
+                    } else {
+                        alert("Error desconocido: " + textStatus);
+                    }
                 }
-            },
-            error: function(xhr, textStatus, errorThrown) {
-                // Manejo de errores basado en el código de estado
-                if (xhr.status === 404) {
-                    alert("Usuario no encontrado");
-                } else if (xhr.status === 500) {
-                    alert("Error en el servidor, intente de nuevo");
-                } else {
-                    alert("Error desconocido: " + textStatus);
-                }
-            }
+            });
         });
     });
-});
 
 </script>
 </body>

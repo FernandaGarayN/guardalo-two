@@ -20,6 +20,13 @@ spring:
       schema-locations: classpath:sql_imports/V00_00_INIT_TABLES.sql
       data-locations: classpath:sql_imports/V00_01_INITIAL_DATA.sql
 
+feign:
+  clients:
+    musicpro:
+        url: https://musicpro.bemtorres.win/api/v1
+    telollevo:
+        url: http://192.168.100.27:8080/api/v1
+
 logging:
   level:
     org.springframework.web: INFO

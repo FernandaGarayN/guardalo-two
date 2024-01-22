@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
     name = "musicpro-client",
-    url = "https://musicpro.bemtorres.win/api/v1",
+    url = "${feign.clients.musicpro.url}",
     configuration = CommonFeignConfig.class)
 public interface MusicProClient {
   @GetMapping("/bodega/producto")

@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
     name = "telollevo-client",
-    url = "http://192.168.100.27:8080",
+    url = "${feign.clients.telollevo.url}",
     configuration = CommonFeignConfig.class)
 public interface TeLoLlevoTransportClient {
-  @PostMapping("/api/v1/solicitudes")
+  @PostMapping("/solicitudes")
   TeLoLlevoTransportResponsePostRequest postRequest(@RequestBody TeLoLlevoTransportRequestPostRequest request);
 
-  @GetMapping("/api/v1/solicitudes/{trackCode}/estado")
+  @GetMapping("/solicitudes/{trackCode}/estado")
   TeloLlevoTransportResponseGetStatus getStatus(@PathVariable String trackCode);
 }
