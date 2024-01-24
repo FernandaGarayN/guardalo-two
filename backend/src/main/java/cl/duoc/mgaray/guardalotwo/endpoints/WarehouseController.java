@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -79,10 +78,15 @@ public class WarehouseController {
   }
 
   @GetMapping("/products")
-  public ResponseEntity<List<ResponseGetProduct>> getAllProducts(@RequestParam(defaultValue = "0") Integer pageNo,
-                                                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-    var paging = PageRequest.of(pageNo, pageSize);
-    var products = productService.getAllProducts(paging);
+  public ResponseEntity<List<ResponseGetProduct>> getAllProducts(@RequestParam(required = false) Integer pageNo,
+                                                                 @RequestParam(required = false) Integer pageSize) {
+    List<Product> products = null;
+    if (pageNo != null && pageSize != null ) {
+      var paging = PageRequest.of(pageNo, pageSize);
+      products = productService.getAllProducts(paging);
+    } else {
+      products = productService.getAllProducts();
+    }
     return ResponseEntity.ok(toGetResponse(products));
   }
 
@@ -99,16 +103,21 @@ public class WarehouseController {
   }
 
   @GetMapping("/products/search")
-  public ResponseEntity<List<ResponseGetProduct>> searchProducts(@RequestParam String term, @RequestParam String transportEnterprise) {
-    var products = productService.searchProducts(transportEnterprise, term);
+  public ResponseEntity<List<ResponseGetProduct>> searchProducts(@RequestParam String term, @RequestParam String warehouse) {
+    var products = productService.searchProducts(warehouse, term);
     return ResponseEntity.ok(products.stream().map(this::toGetResponseWithValue).toList());
   }
 
   @GetMapping("/requests")
-  public ResponseEntity<List<ResponseGetRequest>> getAllRequests(@RequestParam(defaultValue = "0") Integer pageNo,
-                                                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-    var paging = PageRequest.of(pageNo, pageSize);
-    var requests = requestService.getAllRequests(paging);
+  public ResponseEntity<List<ResponseGetRequest>> getAllRequests(@RequestParam(required = false) Integer pageNo,
+                                                                 @RequestParam(required = false) Integer pageSize) {
+    List<ProductsRequest> requests;
+    if (pageNo != null && pageSize != null) {
+      var paging = PageRequest.of(pageNo, pageSize);
+      requests = requestService.getAllRequests(paging);
+    } else {
+      requests = requestService.getAllRequests();
+    }
     return ResponseEntity.ok(toResponseGetRequests(requests));
   }
 

@@ -67,6 +67,14 @@ public class RequestService {
         .toList();
   }
 
+  @Transactional(readOnly = true)
+  public List<ProductsRequest> getAllRequests() {
+    return requestRepository.findAll()
+            .stream()
+            .map(this::toDomain)
+            .toList();
+  }
+
   @Transactional
   public String sendToTransport(SendToTransportCmd cmd) {
     if (PIVOT_TRANSPORT_ENTERPRISE.equalsIgnoreCase(cmd.getTransport())) {

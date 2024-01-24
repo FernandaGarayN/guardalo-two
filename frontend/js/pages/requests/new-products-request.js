@@ -74,7 +74,7 @@ $(document).ready(function () {
             },
             source: function (request, response) {
                 $.ajax({
-                    url: `http://localhost:8081/api/v1/warehouses/products/search?transportEnterprise=${warehouseCompany}`,
+                    url: `http://localhost:8081/api/v1/warehouses/products/search?warehouse=${warehouseCompany}`,
                     type: 'GET',
                     data: {
                         term: request.term

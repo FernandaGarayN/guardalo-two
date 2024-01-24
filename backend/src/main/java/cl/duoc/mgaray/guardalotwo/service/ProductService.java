@@ -43,6 +43,11 @@ public class ProductService {
     return productRepository.findAll(paging).stream().map(this::toDomain).toList();
   }
 
+  @Transactional(readOnly = true)
+  public List<Product> getAllProducts() {
+    return productRepository.findAll().stream().map(this::toDomain).toList();
+  }
+
   private Product toDomain(MusicProWarehouseProduct musicProWarehouseProduct) {
     var stock = musicProWarehouseProduct.getStock();
     if (stock == null) {

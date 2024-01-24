@@ -163,19 +163,18 @@ Si prefieres utilizar MySQL en lugar de H2, deberás realizar algunos cambios en
 
 El backend de `Guárdalo Two` ofrece las siguientes APIs:
 
-* **GET /api/v1/warehouses/requests**: Esta API se utiliza para obtener todas las solicitudes de transporte
+* **GET /api/v1/warehouses/requests**: Esta API se utiliza para obtener todas las solicitudes de productos. Opcionalmente se pueden paginar resultados
 * **POST /api/v1/warehouses/requests**: Esta API se utiliza para crear una nueva solicitud de productos a la bodega seleccionada
 * **GET /api/v1/warehouses/requests/count**: Esta API se utiliza para obtener el número de solicitudes de productos
-
-* **GET /api/v1/warehouses/products**: Esta API se utiliza para obtener todos los productos de la bodega
+* **GET /api/v1/warehouses/products**: Esta API se utiliza para obtener todos los productos de la bodega. Opcionalmente se pueden paginar resultados
 * **POST /api/v1/warehouses/products**: Esta API se utiliza para crear un nuevo producto en la bodega
 * **GET /api/v1/warehouses/products/{id}**: Esta API se utiliza para obtener un producto de la bodega
-* **GET /api/v1/warehouses/products/{id}/search**: Esta API se utiliza para buscar un producto de la bodega utilizando un criterio para su sku, nombre o descripción
+* **GET /api/v1/warehouses/products/search**: Esta API se utiliza para buscar un producto de la bodega utilizando un criterio para su sku, nombre o descripción
 * **GET /api/v1/warehouses/products/music-pro**: Esta API se utiliza para obtener todos los productos de la bodega que pertenecen al grupo de productos de música profesional
 * **GET /api/v1/warehouses/products/count**: Esta API se utiliza para obtener el número de productos de la bodega
 
 * **POST /api/v1/warehouses/transport**: Esta API se utiliza para crear una nueva solicitud de transporte a la empresa seleccionada
-* **GET /api/v1/warehouses/transport/{trackCode/status}**: Esta API se utiliza para obtener el estado de una solicitud de transporte a través de su código de seguimiento
+* **GET /api/v1/warehouses/transport/{trackCode}/status**: Esta API se utiliza para obtener el estado de una solicitud de transporte a través de su código de seguimiento
 
 Estas APIs tiene una especificación que puede ser accedida desde [la documentación Swagger](http://localhost:8081/swagger-ui/index.html)
 
